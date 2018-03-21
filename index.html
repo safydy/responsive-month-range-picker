@@ -1,0 +1,48 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="manifest" href="site.webmanifest">
+        <link rel="apple-touch-icon" href="icon.png">
+        <!-- Place favicon.ico in the root directory -->
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="css/responsive-month-range-picker.css">
+    </head>
+    <body>
+        <!--[if lte IE 9]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+        <![endif]-->
+        <section class="content">
+            <!-- Add your site or application content here -->
+            <h1>Responsive month range picker</h1>
+            <div id="test"></div>
+            <div id="sla-data-range" class="mrp-container nav navbar-nav">
+                <span class="mrp-icon"><i class="fa fa-calendar"></i></span>
+                <div class="mrp-monthdisplay">
+                    <span class="mrp-lowerMonth">Jul 2014</span>
+                    <span class="mrp-to"> to </span>
+                    <span class="mrp-upperMonth">Aug 2014</span>
+                </div>
+                <input type="hidden" value="201407" id="mrp-lowerDate" />
+                <input type="hidden" value="201408" id="mrp-upperDate" />
+            </div>
+        </section>
+
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script>window.jQuery || document.write('<script src="js/vendor/jquery-3.2.1.min.js"><\/script>')</script>
+        <script src="js/plugins.js"></script>
+        <script src="js/responsive-month-range-picker.js"></script>
+        <script>
+            $("#test").responsiveMonthRange();
+            $("#sla-data-range").responsiveMonthRange();
+        </script>
+    </body>
+</html>
