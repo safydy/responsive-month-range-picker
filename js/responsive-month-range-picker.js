@@ -2,17 +2,7 @@
 (function ( $ ) {
 
     $.fn.responsiveMonthRange = function( options ) {
-        // Plugin defaults – added as a property on our plugin function.
-        var defaults = {
-            MONTHS: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
-            startMonth: 7,
-            startYear: 2014,
-            endMonth: 8,
-            endYear: 2015,
-            fiscalMonth: 7
-        };
-        // This is the easiest way to have default options.
-        var settings = $.extend({}, defaults, options);
+        var settings = $.extend({}, $.fn.responsiveMonthRange.defaults, options);
         console.log(settings);
 
         if(settings.startMonth < 10)
@@ -23,8 +13,19 @@
             settings.endDate = parseInt("" + settings.endYear + '0' + settings.endMonth + "");
         else
             settings.endDate = parseInt("" + settings.endYear + settings.endMonth + "");
-
-
+        
+        // container.addClass('mrp-container nav navbar-nav');
+        var container = this;
+        this.append('<div class="mrp-container nav navbar-nav">' +
+            '<span class="mrp-icon"><i class="fa fa-calendar"></i></span>' +
+            '<div class="mrp-monthdisplay">' +
+            '<span class="mrp-lowerMonth">Jul 2014</span>' +
+            '<span class="mrp-to"> to </span>' +
+            '<span class="mrp-upperMonth">Aug 2014</span>' +
+            '</div>' +
+            '<input type="hidden" value="201407" id="mrp-lowerDate" />' +
+            '<input type="hidden" value="201408" id="mrp-upperDate" />' +
+        '</div>');
         var content = '<div class="row mpr-calendarholder">';
         var calendarCount = settings.endYear - settings.startYear;
         if(calendarCount == 0)
@@ -50,9 +51,36 @@
         content += '<button class="btn btn-info mpr-prev-year">Previous Year</button>';
         content += '</div>';
         content += '</div>';
-        
-        this.on('click','.mpr-month',function(e){
+
+        // this.append(content);//in popover
+        console.log("init : "+container.attr('id'));
+        var mprVisible = false;
+        var mprpopover = container.find('.mrp-container').popover({
+            container: container,//"body",
+            placement: "bottom",
+            html: true,
+            content: content
+        }).on('show.bs.popover', function () {
+            console.log(container.attr("id") + " : " + ".mrp-container show.bs.popover");
+            container.find('.popover').remove();
+            var waiter = setInterval(function(){
+                if(container.find('.popover').length > 0){
+                    clearInterval(waiter);
+                    setViewToCurrentYears(container);
+                    paintMonths(container);
+                }
+            },50);
+        }).on('shown.bs.popover', function(){
+            console.log(container.attr("id") + " : " + ".mrp-container shown.bs.popover");
+            mprVisible = true;
+        }).on('hidden.bs.popover', function(){
+            console.log(container.attr("id") + " : " + ".mrp-container hidden.bs.popover");
+            mprVisible = false;
+        });
+
+        container.on('click','.mpr-month',function(e){
             e.stopPropagation();
+            console.log(container.attr("id") + " : " + ".mpr-month");
             $month = $(this);
             var monthnum = $month.data('month');
             var year = $month.parents('.mpr-calendar').children('h5').children('span').html();
@@ -62,7 +90,7 @@
                 if(settings.startDate > settings.endDate){
 
                     if(year != parseInt(settings.endDate/100))
-                        this.find('.mpr-calendar:last h5 span').html(year);
+                        container.find('.mpr-calendar:last h5 span').html(year);
                     settings.endDate = settings.startDate;
                 }
             }else{
@@ -70,38 +98,41 @@
                 settings.endDate = parseInt("" + year + monthnum);
                 if(settings.startDate > settings.endDate){
                     if(year != parseInt(settings.startDate/100))
-                        this.find('.mpr-calendar:first h5 span').html(year);
+                        container.find('.mpr-calendar:first h5 span').html(year);
                     settings.startDate = settings.endDate;
                 }
             }
 
-            $.fn.paintMonths();
+            paintMonths(container);
         });
-        
-        this.on('click','.mpr-yearup',function(e){
+
+        container.on('click','.mpr-yearup',function(e){
+            console.log(container.attr("id") + " : " + ".mpr-yearup");
             e.stopPropagation();
             var year = parseInt($(this).prev().html());
             year++;
             $(this).prev().html(""+year);
             $(this).parents('.mpr-calendar').find('.mpr-MonthsWrapper').fadeOut(175,function(){
-                $.fn.paintMonths();
+                paintMonths(container);
                 $(this).parents('.mpr-calendar').find('.mpr-MonthsWrapper').fadeIn(175);
             });
         });
 
-        this.on('click','.mpr-yeardown',function(e){
+        container.on('click','.mpr-yeardown',function(e){
+            console.log(container.attr("id") + " : " + ".mpr-yeardown");
             e.stopPropagation();
             var year = parseInt($(this).next().html());
             year--;
             $(this).next().html(""+year);
-            //paintMonths();
+            //paintMonths(container);
             $(this).parents('.mpr-calendar').find('.mpr-MonthsWrapper').fadeOut(175,function(){
-                $.fn.paintMonths();
+                paintMonths(container);
                 $(this).parents('.mpr-calendar').find('.mpr-MonthsWrapper').fadeIn(175);
             });
         });
 
-        this.on('click','.mpr-ytd', function(e){
+        container.on('click','.mpr-ytd', function(e){
+            console.log(container.attr("id") + " : " + ".mpr-ytd");
             e.stopPropagation();
             var d = new Date();
             settings.startDate = parseInt(d.getFullYear() + "01");
@@ -109,33 +140,35 @@
             if(month < 9)
                 month = "0" + month;
             settings.endDate = parseInt("" + d.getFullYear() + month);
-            this.find('.mpr-calendar').each(function(){
+            container.find('.mpr-calendar').each(function(){
                 var $cal = $(this);
-                var year = this.find('h5 span',$cal).html(d.getFullYear());
+                var year = container.find('h5 span',$cal).html(d.getFullYear());
             });
-            this.find('.mpr-calendar').find('.mpr-MonthsWrapper').fadeOut(175,function(){
-                $.fn.paintMonths();
-                this.find('.mpr-calendar').find('.mpr-MonthsWrapper').fadeIn(175);
+            container.find('.mpr-calendar').find('.mpr-MonthsWrapper').fadeOut(175,function(){
+                paintMonths(container);
+                container.find('.mpr-calendar').find('.mpr-MonthsWrapper').fadeIn(175);
             });
         });
 
-        this.on('click','.mpr-prev-year', function(e){
+        container.on('click','.mpr-prev-year', function(e){
+            console.log(container.attr("id") + " : " + ".mpr-prev-year");
             e.stopPropagation();
             var d = new Date();
             var year = d.getFullYear()-1;
             settings.startDate = parseInt(year + "01");
             settings.endDate = parseInt(year + "12");
-            this.find('.mpr-calendar').each(function(){
+            container.find('.mpr-calendar').each(function(){
                 var $cal = $(this);
-                this.find('h5 span',$cal).html(year);
+                container.find('h5 span',$cal).html(year);
             });
-            this.find('.mpr-calendar').find('.mpr-MonthsWrapper').fadeOut(175,function(){
-                $.fn.paintMonths();
-                this.find('.mpr-calendar').find('.mpr-MonthsWrapper').fadeIn(175);
+            container.find('.mpr-calendar').find('.mpr-MonthsWrapper').fadeOut(175,function(){
+                paintMonths(container);
+                container.find('.mpr-calendar').find('.mpr-MonthsWrapper').fadeIn(175);
             });
         });
 
-        this.on('click','.mpr-fiscal-ytd', function(e){
+        container.on('click','.mpr-fiscal-ytd', function(e){
+            console.log(container.attr("id") + " : " + ".mpr-fiscal-ytd");
             e.stopPropagation();
             var d = new Date();
             var year;
@@ -146,27 +179,28 @@
             if(settings.fiscalMonth < 10)
                 fm = "0" + settings.fiscalMonth;
             else
-                fm = fiscalMonth;
+                fm = settings.fiscalMonth;
             if(d.getMonth()+1 < 10)
                 cm = "0" + (d.getMonth()+1);
             else
                 cm = (d.getMonth()+1);
             settings.startDate = parseInt("" + year + fm);
             settings.endDate = parseInt("" + d.getFullYear() + cm);
-            this.find('.mpr-calendar').each(function(i){
+            container.find('.mpr-calendar').each(function(i){
                 var $cal = $(this);
                 if(i == 0)
-                    this.find('h5 span',$cal).html(year);
+                    container.find('h5 span',$cal).html(year);
                 else
-                    this.find('h5 span',$cal).html(d.getFullYear());
+                    container.find('h5 span',$cal).html(d.getFullYear());
             });
-            this.find('.mpr-calendar').find('.mpr-MonthsWrapper').fadeOut(175,function(){
-                $.fn.paintMonths();
-                this.find('.mpr-calendar').find('.mpr-MonthsWrapper').fadeIn(175);
+            container.find('.mpr-calendar').find('.mpr-MonthsWrapper').fadeOut(175,function(){
+                paintMonths(container);
+                container.find('.mpr-calendar').find('.mpr-MonthsWrapper').fadeIn(175);
             });
         });
 
-        this.on('click','.mpr-prev-fiscal', function(){
+        container.on('click','.mpr-prev-fiscal', function(){
+            console.log(container.attr("id") + " : " + ".mpr-prev-ytd");
             var d = new Date();
             var year;
             if((d.getMonth()+1) < settings.fiscalMonth)
@@ -174,7 +208,7 @@
             else
                 year = d.getFullYear() - 1;
             if(settings.fiscalMonth < 10)
-                fm = "0" + fiscalMonth;
+                fm = "0" + settings.fiscalMonth;
             else
                 fm = settings.fiscalMonth;
             if(settings.fiscalMonth -1 < 10)
@@ -183,112 +217,102 @@
                 efm = (settings.fiscalMonth-1);
             settings.startDate = parseInt("" + year + fm);
             settings.endDate = parseInt("" + (d.getFullYear() - 1) + efm);
-            this.find('.mpr-calendar').each(function(i){
+            container.find('.mpr-calendar').each(function(i){
                 var $cal = $(this);
                 if(i == 0)
-                    this.find('h5 span',$cal).html(year);
+                    container.find('h5 span',$cal).html(year);
                 else
-                    this.find('h5 span',$cal).html(d.getFullYear()-1);
+                    container.find('h5 span',$cal).html(d.getFullYear()-1);
             });
-            this.find('.mpr-calendar').find('.mpr-MonthsWrapper').fadeOut(175,function(){
-                $.fn.paintMonths();
-                this.find('.mpr-calendar').find('.mpr-MonthsWrapper').fadeIn(175);
+            container.find('.mpr-calendar').find('.mpr-MonthsWrapper').fadeOut(175,function(){
+                paintMonths(container);
+                container.find('.mpr-calendar').find('.mpr-MonthsWrapper').fadeIn(175);
             });
         });
 
-        var mprVisible = false;
-        var mprpopover = this.find('.mrp-container').popover({
-            container: "body",
-            placement: "bottom",
-            html: true,
-            content: content
-        }).on('show.bs.popover', function () {
-            this.find('.popover').remove();
-            var waiter = setInterval(function(){
-                if(this.find('.popover').length > 0){
-                    clearInterval(waiter);
-                    this.setViewToCurrentYears();
-                    $.fn.paintMonths();
-                }
-            },50);
-        }).on('shown.bs.popover', function(){
-            mprVisible = true;
-        }).on('hidden.bs.popover', function(){
-            mprVisible = false;
-        });
-
-        this.on('click','.mpr-calendarholder',function(e){
+        container.on('click','.mpr-calendarholder',function(e){
+            console.log(container.attr("id") + " : " + ".mpr-calendarholder");
             e.preventDefault();
             e.stopPropagation();
         });
-        this.on("click",".mrp-container",function(e){
+        container.on("click",".mrp-container",function(e){
+            console.log(container.attr("id") + " : " + ".mpr-container");
             if(mprVisible){
                 e.preventDefault();
                 e.stopPropagation();
                 mprVisible = false;
             }
         });
-        this.on("click",function(e){
+        container.on("click",function(e){
             if(mprVisible){
-                this.find('.mpr-calendarholder').parents('.popover').fadeOut(200,function(){
-                    this.find('.mpr-calendarholder').parents('.popover').remove();
-                    this.find('.mrp-container').trigger('click');
+                container.find('.mpr-calendarholder').parents('.popover').fadeOut(200,function(){
+                    container.find('.mpr-calendarholder').parents('.popover').remove();
+                    container.find('.mrp-container').trigger('click');
                 });
                 mprVisible = false;
             }
         });
 
-        this.append(content);
-        return this;
-    };
-
-    $.fn.paintMonths = function(_this) {
-
-        console.log(_this.settings);
-        _this.find('.mpr-calendar').each(function(){
-            var $cal = $(this);
-            var year = this.find('h5 span',$cal).html();
-            _this.find('.mpr-month',$cal).each(function(i){
-                if((i+1) > 9)
-                    cDate = parseInt("" + year + (i+1));
-                else
-                    cDate = parseInt("" + year+ '0' + (i+1));
-                if(cDate >= _this.settings.startDate && cDate <= _this.settings.endDate){
-                    $(this).addClass('mpr-selected');
-                }else{
-                    $(this).removeClass('mpr-selected');
-                }
+        paintMonths = function(_this) {
+            console.log(_this.attr("id") + " : " + "paint months");
+            _this.find('.mpr-calendar').each(function(){
+                var $cal = $(this);
+                var year = _this.find('h5 span',$cal).html();
+                _this.find('.mpr-month',$cal).each(function(i){
+                    if((i+1) > 9)
+                        cDate = parseInt("" + year + (i+1));
+                    else
+                        cDate = parseInt("" + year+ '0' + (i+1));
+                    if(cDate >= settings.startDate && cDate <= settings.endDate){
+                        $(this).addClass('mpr-selected');
+                    }else{
+                        $(this).removeClass('mpr-selected');
+                    }
+                });
             });
-        });
-        _this.find('.mpr-calendar .mpr-month').css("background","");
-        //Write Text
-        var startyear = parseInt(this.settings.startDate / 100);
-        var startmonth = parseInt(this.safeRound((this.settings.startDate / 100 - startyear)) * 100);
-        var endyear = parseInt(this.settings.endDate / 100);
-        var endmonth = parseInt(this.safeRound((this.settings.endDate / 100 - endyear)) * 100);
-        this.find('.mrp-monthdisplay .mrp-lowerMonth').html(this.settings.MONTHS[startmonth - 1] + " " + startyear);
-        this.find('.mrp-monthdisplay .mrp-upperMonth').html(this.settings.MONTHS[endmonth - 1] + " " + endyear);
-        this.find('.mpr-lowerDate').val(this.settings.startDate);
-        this.find('.mpr-upperDate').val(this.settings.endDate);
-        if(startyear == parseInt(this.find('.mpr-calendar:first h5 span').html()))
-            this.find('.mpr-calendar:first .mpr-selected:first').css("background","#40667A");
-        if(endyear == parseInt(this.find('.mpr-calendar:last h5 span').html()))
-            this.find('.mpr-calendar:last .mpr-selected:last').css("background","#40667A");
+            _this.find('.mpr-calendar .mpr-month').css("background","");
+            //Write Text
+            var startyear = parseInt(settings.startDate / 100);
+            var startmonth = parseInt(safeRound((settings.startDate / 100 - startyear)) * 100);
+            var endyear = parseInt(settings.endDate / 100);
+            var endmonth = parseInt(safeRound((settings.endDate / 100 - endyear)) * 100);
+            _this.find('.mrp-monthdisplay .mrp-lowerMonth').html(settings.MONTHS[startmonth - 1] + " " + startyear);
+            _this.find('.mrp-monthdisplay .mrp-upperMonth').html(settings.MONTHS[endmonth - 1] + " " + endyear);
+            _this.find('.mpr-lowerDate').val(settings.startDate);
+            _this.find('.mpr-upperDate').val(settings.endDate);
+            if(startyear == parseInt(_this.find('.mpr-calendar:first h5 span').html()))
+                _this.find('.mpr-calendar:first .mpr-selected:first').css("background","#40667A");
+            if(endyear == parseInt(_this.find('.mpr-calendar:last h5 span').html()))
+                _this.find('.mpr-calendar:last .mpr-selected:last').css("background","#40667A");
 
-        return this;
+            return _this;
+        };
+
+        setViewToCurrentYears = function(_this) {
+            var startyear = parseInt(settings.startDate / 100);
+            var endyear = parseInt(settings.endDate / 100);
+            _this.find('.mpr-calendar h5 span').eq(0).html(startyear);
+            _this.find('.mpr-calendar h5 span').eq(1).html(endyear);
+
+            return _this;
+        }
+
+        safeRound = function(val) {
+            return Math.round(((val)+ 0.00001) * 100) / 100;
+        }
+        
+        return container;
     };
+    
 
-    $.fn.setViewToCurrentYears = function() {
-        var startyear = parseInt(this.settings.startDate / 100);
-        var endyear = parseInt(this.settings.endDate / 100);
-        this.find('.mpr-calendar h5 span').eq(0).html(startyear);
-        this.find('.mpr-calendar h5 span').eq(1).html(endyear);
-
-        return this;
-    }
-
-    $.fn.safeRound = function(val) {
-        return Math.round(((val)+ 0.00001) * 100) / 100;
-    }
+    // Plugin defaults – added as a property on our plugin function.
+    $.fn.responsiveMonthRange.defaults = {
+        MONTHS: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
+        startMonth: 7,
+        startYear: 2014,
+        endMonth: 8,
+        endYear: 2015,
+        fiscalMonth: 7
+    };
 
 }( jQuery ));
