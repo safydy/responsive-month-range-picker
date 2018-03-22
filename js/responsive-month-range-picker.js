@@ -2,19 +2,20 @@
 (function ( $ ) {
 
     $.fn.responsiveMonthRange = function( options ) {
-        var settings = $.extend({}, $.fn.responsiveMonthRange.defaults, options);
-        console.log(settings);
-
-        if(settings.defaultDate.start.month < 10)
-            settings.cStartDate = parseInt("" + settings.defaultDate.start.year + '0' + settings.defaultDate.start.month + "");
-        else
-            settings.cStartDate = parseInt("" + settings.defaultDate.start.year  + settings.defaultDate.start.month + "");
-        if(settings.defaultDate.end.month < 10)
-            settings.cEndDate = parseInt("" + settings.defaultDate.end.year + '0' + settings.defaultDate.end.month + "");
-        else
-            settings.cEndDate = parseInt("" + settings.defaultDate.end.year + settings.defaultDate.end.month + "");
-
         var container = this;
+        container.settings = $.extend({}, $.fn.responsiveMonthRange.defaults, options);
+        console.log(container.settings);
+
+        if(container.settings.defaultDate.start.month < 10)
+            container.settings.cStartDate = parseInt("" + container.settings.defaultDate.start.year + '0' + container.settings.defaultDate.start.month + "");
+        else
+            container.settings.cStartDate = parseInt("" + container.settings.defaultDate.start.year  + container.settings.defaultDate.start.month + "");
+        if(container.settings.defaultDate.end.month < 10)
+            container.settings.cEndDate = parseInt("" + container.settings.defaultDate.end.year + '0' + container.settings.defaultDate.end.month + "");
+        else
+            container.settings.cEndDate = parseInt("" + container.settings.defaultDate.end.year + container.settings.defaultDate.end.month + "");
+
+        
         this.append('<div class="mrp-container nav navbar-nav">' +
             '<span class="mrp-icon"><i class="fa fa-calendar"></i></span>' +
             '<div class="mrp-monthdisplay">' +
@@ -26,7 +27,7 @@
             '<input type="hidden" value="201408" class="mrp-upperDate" />' +
         '</div>');
         var content = '<div class="row mpr-calendarholder">';
-        var calendarCount = settings.defaultDate.end.year - settings.defaultDate.start.year;
+        var calendarCount = container.settings.defaultDate.end.year - container.settings.defaultDate.start.year;
         if(calendarCount == 0)
             calendarCount++;
         var d = new Date();
@@ -34,7 +35,7 @@
             content += '<div class="calendar-column col-xs-5" >' +
                 '<div class="mpr-calendar row mpr-calendar-' + (y+1) + '" >'//id="mpr-calendar-' + (y+1) + '">'
                 + '<h5 class="col-xs-12">' +
-                '<i class="mpr-yeardown fa fa-arrow-left"></i>' + '<span>' + (settings.defaultDate.start.year + y).toString() + '</span>' + '<i class="mpr-yearup fa fa-arrow-right"></i>' +
+                '<i class="mpr-yeardown fa fa-arrow-left"></i>' + '<span>' + (container.settings.defaultDate.start.year + y).toString() + '</span>' + '<i class="mpr-yearup fa fa-arrow-right"></i>' +
                 '</h5>' +
                 '<div class="mpr-monthsContainer">' +
                 '<div class="mpr-MonthsWrapper">';
@@ -44,7 +45,7 @@
                     monthval = "0" + (m+1);
                 else
                     monthval = "" + (m+1);
-                content += '<span data-month="' + monthval  + '" class="col-xs-4 mpr-month">' + settings.MONTHS[m] + '</span>';
+                content += '<span data-month="' + monthval  + '" class="col-xs-4 mpr-month">' + container.settings.MONTHS[m] + '</span>';
             }
             content += '</div></div></div></div>';
         }
@@ -93,20 +94,20 @@
             console.log("clicked : " + year+"-"+monthnum);
             if($month.parents('.mpr-calendar-1').length > 0){
                 //Start Date
-                settings.cStartDate = parseInt("" + year + monthnum);
-                if(settings.cStartDate > settings.cEndDate){
+                container.settings.cStartDate = parseInt("" + year + monthnum);
+                if(container.settings.cStartDate > container.settings.cEndDate){
 
-                    if(year != parseInt(settings.cEndDate/100))
+                    if(year != parseInt(container.settings.cEndDate/100))
                         container.find('.mpr-calendar:last h5 span').html(year);
-                    settings.cEndDate = settings.cStartDate;
+                    container.settings.cEndDate = container.settings.cStartDate;
                 }
             }else{
                 //End Date
-                settings.cEndDate = parseInt("" + year + monthnum);
-                if(settings.cStartDate > settings.cEndDate){
-                    if(year != parseInt(settings.cStartDate/100))
+                container.settings.cEndDate = parseInt("" + year + monthnum);
+                if(container.settings.cStartDate > container.settings.cEndDate){
+                    if(year != parseInt(container.settings.cStartDate/100))
                         container.find('.mpr-calendar:first h5 span').html(year);
-                    settings.cStartDate = settings.cEndDate;
+                    container.settings.cStartDate = container.settings.cEndDate;
                 }
             }
 
@@ -142,11 +143,11 @@
             console.log(container.attr("id") + " : " + ".mpr-ytd");
             e.stopPropagation();
             var d = new Date();
-            settings.cStartDate = parseInt(d.getFullYear() + "01");
+            container.settings.cStartDate = parseInt(d.getFullYear() + "01");
             var month = d.getMonth() + 1;
             if(month < 9)
                 month = "0" + month;
-            settings.cEndDate = parseInt("" + d.getFullYear() + month);
+            container.settings.cEndDate = parseInt("" + d.getFullYear() + month);
             container.find('.mpr-calendar').each(function(){
                 var $cal = $(this);
                 var year = $cal.find('h5 span').html(d.getFullYear());
@@ -162,8 +163,8 @@
             e.stopPropagation();
             var d = new Date();
             var year = d.getFullYear()-1;
-            settings.cStartDate = parseInt(year + "01");
-            settings.cEndDate = parseInt(year + "12");
+            container.settings.cStartDate = parseInt(year + "01");
+            container.settings.cEndDate = parseInt(year + "12");
             container.find('.mpr-calendar').each(function(){
                 var $cal = $(this);
                 $cal.find('h5 span').html(year);
@@ -179,20 +180,20 @@
             e.stopPropagation();
             var d = new Date();
             var year;
-            if((d.getMonth()+1) < settings.fiscalDate.month)
+            if((d.getMonth()+1) < container.settings.fiscalDate.month)
                 year = d.getFullYear() - 1;
             else
                 year = d.getFullYear();
-            if(settings.fiscalDate.month < 10)
-                fm = "0" + settings.fiscalDate.month;
+            if(container.settings.fiscalDate.month < 10)
+                fm = "0" + container.settings.fiscalDate.month;
             else
-                fm = settings.fiscalDate.month;
+                fm = container.settings.fiscalDate.month;
             if(d.getMonth()+1 < 10)
                 cm = "0" + (d.getMonth()+1);
             else
                 cm = (d.getMonth()+1);
-            settings.cStartDate = parseInt("" + year + fm);
-            settings.cEndDate = parseInt("" + d.getFullYear() + cm);
+            container.settings.cStartDate = parseInt("" + year + fm);
+            container.settings.cEndDate = parseInt("" + d.getFullYear() + cm);
             container.find('.mpr-calendar').each(function(i){
                 var $cal = $(this);
                 if(i == 0)
@@ -210,20 +211,20 @@
             console.log(container.attr("id") + " : " + ".mpr-prev-ytd");
             var d = new Date();
             var year;
-            if((d.getMonth()+1) < settings.fiscalDate.month)
+            if((d.getMonth()+1) < container.settings.fiscalDate.month)
                 year = d.getFullYear() - 2;
             else
                 year = d.getFullYear() - 1;
-            if(settings.fiscalDate.month < 10)
-                fm = "0" + settings.fiscalDate.month;
+            if(container.settings.fiscalDate.month < 10)
+                fm = "0" + container.settings.fiscalDate.month;
             else
-                fm = settings.fiscalDate.month;
-            if(settings.fiscalDate.month -1 < 10)
-                efm = "0" + (settings.fiscalDate.month-1);
+                fm = container.settings.fiscalDate.month;
+            if(container.settings.fiscalDate.month -1 < 10)
+                efm = "0" + (container.settings.fiscalDate.month-1);
             else
-                efm = (settings.fiscalDate.month-1);
-            settings.cStartDate = parseInt("" + year + fm);
-            settings.cEndDate = parseInt("" + (d.getFullYear() - 1) + efm);
+                efm = (container.settings.fiscalDate.month-1);
+            container.settings.cStartDate = parseInt("" + year + fm);
+            container.settings.cEndDate = parseInt("" + (d.getFullYear() - 1) + efm);
             container.find('.mpr-calendar').each(function(i){
                 var $cal = $(this);
                 if(i == 0)
@@ -262,7 +263,7 @@
 
         paintMonths = function(_this) {
             console.log(_this.attr("id") + " : " + "paint months");
-            console.log(settings);
+            console.log(_this.settings);
             _this.find('.mpr-calendar').each(function(){
                 var $cal = $(this);
                 var year = $cal.find('h5 span').html();
@@ -271,7 +272,7 @@
                         cDate = parseInt("" + year + (i+1));
                     else
                         cDate = parseInt("" + year+ '0' + (i+1));
-                    if(cDate >= settings.cStartDate && cDate <= settings.cEndDate){
+                    if(cDate >= _this.settings.cStartDate && cDate <= _this.settings.cEndDate){
                         $(this).addClass('mpr-selected');
                     }else{
                         $(this).removeClass('mpr-selected');
@@ -280,16 +281,16 @@
             });
             _this.find('.mpr-calendar .mpr-month').css("background","");
             //Write Text
-            var startyear = parseInt(settings.cStartDate / 100);
-            var startmonth = parseInt(safeRound((settings.cStartDate / 100 - startyear)) * 100);
-            var endyear = parseInt(settings.cEndDate / 100);
-            var endmonth = parseInt(safeRound((settings.cEndDate / 100 - endyear)) * 100);
+            var startyear = parseInt(_this.settings.cStartDate / 100);
+            var startmonth = parseInt(safeRound((_this.settings.cStartDate / 100 - startyear)) * 100);
+            var endyear = parseInt(_this.settings.cEndDate / 100);
+            var endmonth = parseInt(safeRound((_this.settings.cEndDate / 100 - endyear)) * 100);
             console.log(startyear + "-" + startmonth + "| " + endyear+"-"+endmonth);
             //edit container values
-            _this.find('.mrp-monthdisplay .mrp-lowerMonth').html(settings.MONTHS[startmonth - 1] + " " + startyear);
-            _this.find('.mrp-monthdisplay .mrp-upperMonth').html(settings.MONTHS[endmonth - 1] + " " + endyear);
-            _this.find('.mrp-lowerDate').val(settings.cStartDate);
-            _this.find('.mrp-upperDate').val(settings.cEndDate);
+            _this.find('.mrp-monthdisplay .mrp-lowerMonth').html(_this.settings.MONTHS[startmonth - 1] + " " + startyear);
+            _this.find('.mrp-monthdisplay .mrp-upperMonth').html(_this.settings.MONTHS[endmonth - 1] + " " + endyear);
+            _this.find('.mrp-lowerDate').val(_this.settings.cStartDate);
+            _this.find('.mrp-upperDate').val(_this.settings.cEndDate);
             //paint months
             if(startyear == parseInt(_this.find('.mpr-calendar:first h5 span').html()))
                 _this.find('.mpr-calendar:first .mpr-selected:first').css("background","#337ab7");
@@ -300,8 +301,8 @@
         };
 
         setViewToCurrentYears = function(_this) {
-            var startyear = parseInt(settings.cStartDate / 100);
-            var endyear = parseInt(settings.cEndDate / 100);
+            var startyear = parseInt(container.settings.cStartDate / 100);
+            var endyear = parseInt(container.settings.cEndDate / 100);
             _this.find('.mpr-calendar h5 span').eq(0).html(startyear);
             _this.find('.mpr-calendar h5 span').eq(1).html(endyear);
 
@@ -312,7 +313,7 @@
             return Math.round(((val)+ 0.00001) * 100) / 100;
         }
         
-        return container;
+        return this;
     };
     
 
