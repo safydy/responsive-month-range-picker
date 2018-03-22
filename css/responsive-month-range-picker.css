@@ -77,17 +77,24 @@
     box-shadow: none;
 }
 
-.mpr-calendarholder .col-xs-6 {
-    max-width: 250px;
-    min-width: 250px;
+.calendar-column {
+    max-width: 120px;
+    min-width: 120px;
+    float: left;
+    position: relative;
+    /*display: inline-table;*/
 }
 
-.mpr-calendarholder .col-xs-1 {
-    max-width: 150px;
-    min-width: 150px;
+.button-column {
+    /*max-width: 80px;*/
+    /*min-width: 80px;*/
+    /*display: inline-table;*/
+    float: left;
+    padding: 3px;
+    width: 80px;
 }
 
-.mpr-calendarholder .btn{
+.button-column .btn{
     /*background-color: #40667A;*/
     /*border-color: #406670;*/
     width:100%;
@@ -95,7 +102,7 @@
     margin-top: 8px;
     /*text-transform: uppercase;*/
     font-size: 10px;
-    /*padding: 10px 0px;*/
+    padding: 5px 0px;
 }
 
 /*.mpr-quickset{*/
@@ -132,5 +139,5 @@
 
 .popover{
     /*min: 80px!important;*/
-    max-width: 540px!important;
+    max-width: 1640px!important;
 }

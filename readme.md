@@ -14,3 +14,7 @@ Propose light solution:
 
 ## How to
 * Write plugin : https://learn.jquery.com/plugins/basic-plugin-creation/
+
+## TODO
+1. adapt to fluid responsiveness, eg: https://www.stephanboyer.com/post/41/fluid-and-responsive-grid-layouts-in-css
+1. add cancel action (button + when clicking outside)

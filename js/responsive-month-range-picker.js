@@ -31,8 +31,13 @@
             calendarCount++;
         var d = new Date();
         for(y = 0; y < 2; y++){
-            content += '<div class="col-xs-4" ><div class="mpr-calendar row mpr-calendar-' + (y+1) + '" >'//id="mpr-calendar-' + (y+1) + '">'
-                + '<h5 class="col-xs-12"><i class="mpr-yeardown fa fa-arrow-left"></i><span>' + (settings.defaultDate.start.year + y).toString() + '</span><i class="mpr-yearup fa fa-arrow-right"></i></h5><div class="mpr-monthsContainer"><div class="mpr-MonthsWrapper">';
+            content += '<div class="calendar-column col-xs-5" >' +
+                '<div class="mpr-calendar row mpr-calendar-' + (y+1) + '" >'//id="mpr-calendar-' + (y+1) + '">'
+                + '<h5 class="col-xs-12">' +
+                '<i class="mpr-yeardown fa fa-arrow-left"></i>' + '<span>' + (settings.defaultDate.start.year + y).toString() + '</span>' + '<i class="mpr-yearup fa fa-arrow-right"></i>' +
+                '</h5>' +
+                '<div class="mpr-monthsContainer">' +
+                '<div class="mpr-MonthsWrapper">';
             for(m=0; m < 12; m++){
                 var monthval;
                 if((m+1) < 10)
@@ -43,7 +48,7 @@
             }
             content += '</div></div></div></div>';
         }
-        content += '<div class="col-xs-4">';
+        content += '<div class="button-column col-xs-2">';
         // content += '<h5 class="mpr-quickset">Quick Set</h5>';
         content += '<button class="btn btn-info mpr-fiscal-ytd">Fiscal YTD</button>';
         content += '<button class="btn btn-info mpr-ytd">Year to date</button>';
