@@ -31,23 +31,25 @@
             calendarCount++;
         var d = new Date();
         for(y = 0; y < 2; y++){
-            content += '<div class="col-xs-6" ><div class="mpr-calendar row mpr-calendar-' + (y+1) + '" >'//id="mpr-calendar-' + (y+1) + '">'
-                + '<h5 class="col-xs-12"><i class="mpr-yeardown fa fa-chevron-circle-left"></i><span>' + (settings.defaultDate.start.year + y).toString() + '</span><i class="mpr-yearup fa fa-chevron-circle-right"></i></h5><div class="mpr-monthsContainer"><div class="mpr-MonthsWrapper">';
+            content += '<div class="col-xs-4" ><div class="mpr-calendar row mpr-calendar-' + (y+1) + '" >'//id="mpr-calendar-' + (y+1) + '">'
+                + '<h5 class="col-xs-12"><i class="mpr-yeardown fa fa-arrow-left"></i><span>' + (settings.defaultDate.start.year + y).toString() + '</span><i class="mpr-yearup fa fa-arrow-right"></i></h5><div class="mpr-monthsContainer"><div class="mpr-MonthsWrapper">';
             for(m=0; m < 12; m++){
                 var monthval;
                 if((m+1) < 10)
                     monthval = "0" + (m+1);
                 else
                     monthval = "" + (m+1);
-                content += '<span data-month="' + monthval  + '" class="col-xs-3 mpr-month">' + settings.MONTHS[m] + '</span>';
+                content += '<span data-month="' + monthval  + '" class="col-xs-4 mpr-month">' + settings.MONTHS[m] + '</span>';
             }
             content += '</div></div></div></div>';
         }
-        content += '<div class="col-xs-1"> <h5 class="mpr-quickset">Quick Set</h5>';
+        content += '<div class="col-xs-4">';
+        // content += '<h5 class="mpr-quickset">Quick Set</h5>';
         content += '<button class="btn btn-info mpr-fiscal-ytd">Fiscal YTD</button>';
         content += '<button class="btn btn-info mpr-ytd">Year to date</button>';
         content += '<button class="btn btn-info mpr-prev-fiscal">Previous FY</button>';
         content += '<button class="btn btn-info mpr-prev-year">Previous Year</button>';
+        content += '<button class="btn btn-primary btn-apply">Apply</button>';
         content += '</div>';
         content += '</div>';
 
@@ -285,9 +287,9 @@
             _this.find('.mrp-upperDate').val(settings.cEndDate);
             //paint months
             if(startyear == parseInt(_this.find('.mpr-calendar:first h5 span').html()))
-                _this.find('.mpr-calendar:first .mpr-selected:first').css("background","#40667A");
+                _this.find('.mpr-calendar:first .mpr-selected:first').css("background","#337ab7");
             if(endyear == parseInt(_this.find('.mpr-calendar:last h5 span').html()))
-                _this.find('.mpr-calendar:last .mpr-selected:last').css("background","#40667A");
+                _this.find('.mpr-calendar:last .mpr-selected:last').css("background","#337ab7");
 
             return _this;
         };
