@@ -41,7 +41,7 @@
 .mpr-calendar{
     display:inline-block;
     padding: 3px 5px;
-    border-right: solid #999 1px;
+    /*border-right: solid #999 1px;*/
 }
 
 .mpr-calendar::last-child{
