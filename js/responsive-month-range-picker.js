@@ -233,7 +233,7 @@
         });
         Self.on("click", ".btn-apply", function (e) {
             Self.setContainerUI();
-            _settings.onApply(this);
+            _settings.onApply(_settings.currentDate);//Event listener
         });
         Self.on("click", function (e) {
             if (mprVisible) {
@@ -307,7 +307,7 @@
         label:{
             to: "to"
         },
-        onApply: function () {
+        onApply: function (e) {
             console.log("apply");
         },
     };
