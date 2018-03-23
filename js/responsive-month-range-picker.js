@@ -2,9 +2,10 @@
 
     $.fn.responsiveMonthRange = function (options) {
         var Self = this;
-        Self.settings = $.extend({}, $.fn.responsiveMonthRange.defaults, options);
+        Self.settings = $.extend(true, $.fn.responsiveMonthRange.defaults, options);
         Self.settings.currentDate = Self.settings.defaultDate;
         var _settings = Self.settings;
+        // console.log(_settings);
 
         Self.append('<div class="mrp-container nav navbar-nav">' +
             '<span class="mrp-icon"><i class="fa fa-calendar"></i></span>' +
@@ -19,7 +20,7 @@
             content += '<div class="calendar-column col-xs-5" >' +
                 '<div class="mpr-calendar row mpr-calendar-' + (y + 1) + '" >'
                 + '<h5 class="col-xs-12">' +
-                '<i class="mpr-yeardown fa fa-arrow-left" data-value="' + (y + 1) + '"></i>' + '<span class="year-label-' + (y + 1) + '">' + (Self.settings.defaultDate.start.year + y).toString() + '</span>' + '<i class="mpr-yearup fa fa-arrow-right" data-value="' + (y + 1) + '"></i>' +
+                '<i class="mpr-yeardown fa fa-arrow-left" data-value="' + (y + 1) + '"></i>' + '<span class="year-label-' + (y + 1) + '">' + (_settings.defaultDate.start.year + y).toString() + '</span>' + '<i class="mpr-yearup fa fa-arrow-right" data-value="' + (y + 1) + '"></i>' +
                 '</h5>' +
                 '<div class="mpr-monthsContainer">' +
                 '<div class="mpr-MonthsWrapper">';
@@ -29,16 +30,24 @@
                     monthval = "0" + (m + 1);
                 else
                     monthval = "" + (m + 1);
-                content += '<span data-month="' + monthval + '" class="col-xs-4 mpr-month">' + Self.settings.MONTHS[m] + '</span>';
+                content += '<span data-month="' + monthval + '" class="col-xs-4 mpr-month">' + _settings.MONTHS[m] + '</span>';
             }
             content += '</div></div></div></div>';
         }
         content += '<div class="button-column col-xs-2">';
         // content += '<h5 class="mpr-quickset">Quick Set</h5>';
-        content += '<button class="btn btn-info mpr-fiscal-ytd">Fiscal YTD</button>';
-        content += '<button class="btn btn-info mpr-ytd">Year to date</button>';
-        content += '<button class="btn btn-info mpr-prev-fiscal">Previous FY</button>';
-        content += '<button class="btn btn-info mpr-prev-year">Previous Year</button>';
+        if(_settings.button.fiscalYtd){
+            content += '<button class="btn btn-info mpr-fiscal-ytd">Fiscal YTD</button>';
+        }
+        if(_settings.button.ytd){
+            content += '<button class="btn btn-info mpr-ytd">Year to date</button>';
+        }
+        if(_settings.button.previousFY){
+            content += '<button class="btn btn-info mpr-prev-fiscal">Previous FY</button>';
+        }
+        if(_settings.button.previousYear){
+            content += '<button class="btn btn-info mpr-prev-year">Previous Year</button>';
+        }
         content += '<button class="btn btn-primary btn-apply">Apply</button>';
         content += '</div>';
         content += '</div>';
@@ -306,6 +315,12 @@
         },
         label:{
             to: "to"
+        },
+        button:{
+            previousYear: true,
+            ytd: true,
+            previousFY: true,
+            fiscalYtd: true
         },
         onApply: function (e) {
             console.log("apply");
