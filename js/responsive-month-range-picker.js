@@ -73,8 +73,7 @@
             var waiter = setInterval(function () {
                 if (container.find('.popover').length > 0) {
                     clearInterval(waiter);
-                    setViewToCurrentYears(container);
-                    paintMonths(container);
+                    container.paintMonths();
                 }
             }, 50);
         }).on('shown.bs.popover', function () {
@@ -116,7 +115,7 @@
                 }
             }
 
-            paintMonths(container);
+           container.paintMonths();;
         });
 
         container.on('click', '.mpr-yearup', function (e) {
@@ -141,7 +140,7 @@
             if(bringChange){
                 container.find(".year-label-"+calId).html("" + year);
                 $(this).parents('.mpr-calendar').find('.mpr-MonthsWrapper').fadeOut(175, function () {
-                    paintMonths(container);
+                   container.paintMonths();;
                     $(this).parents('.mpr-calendar').find('.mpr-MonthsWrapper').fadeIn(175);
                 });
             }
@@ -169,7 +168,7 @@
             if(bringChange){
                 container.find(".year-label-"+calId).html("" + year);
                 $(this).parents('.mpr-calendar').find('.mpr-MonthsWrapper').fadeOut(175, function () {
-                    paintMonths(container);
+                   container.paintMonths();;
                     $(this).parents('.mpr-calendar').find('.mpr-MonthsWrapper').fadeIn(175);
                 });
             }
@@ -188,7 +187,7 @@
                 $(this).find('h5 span').html(d.getFullYear());
             });
             container.find('.mpr-calendar').find('.mpr-MonthsWrapper').fadeOut(175, function () {
-                paintMonths(container);
+               container.paintMonths();;
                 container.find('.mpr-calendar').find('.mpr-MonthsWrapper').fadeIn(175);
             });
         });
@@ -207,7 +206,7 @@
                 $(this).find('h5 span').html(d.getFullYear() - 1);
             });
             container.find('.mpr-calendar').find('.mpr-MonthsWrapper').fadeOut(175, function () {
-                paintMonths(container);
+               container.paintMonths();;
                 container.find('.mpr-calendar').find('.mpr-MonthsWrapper').fadeIn(175);
             });
         });
@@ -237,7 +236,7 @@
                     $cal.find('h5 span').html(endyear);
             });
             container.find('.mpr-calendar').find('.mpr-MonthsWrapper').fadeOut(175, function () {
-                paintMonths(container);
+               container.paintMonths();;
                 container.find('.mpr-calendar').find('.mpr-MonthsWrapper').fadeIn(175);
             });
         });
@@ -267,7 +266,7 @@
                     $cal.find('h5 span').html(endyear);
             });
             container.find('.mpr-calendar').find('.mpr-MonthsWrapper').fadeOut(175, function () {
-                paintMonths(container);
+               container.paintMonths();;
                 container.find('.mpr-calendar').find('.mpr-MonthsWrapper').fadeIn(175);
             });
         });
@@ -286,7 +285,7 @@
             }
         });
         container.on("click", ".btn-apply", function (e) {
-            setContainerStatus(container);
+            container.setContainerStatus();
             container.settings.onApply();
         });
         container.on("click", function (e) {
@@ -299,13 +298,13 @@
             }
         });
 
-        paintMonths = function (_this) {
-            var _settings = _this.settings;
-            console.log(_this.attr("id") + " : " + "paint months");
+        container.paintMonths = function () {
+            var _settings = container.settings;
+            console.log(container.attr("id") + " : " + "paint months");
             console.log("Current Date "+ JSON.stringify(_settings.currentDate));
             console.log(_settings);
 
-            _this.find('.mpr-calendar').each(function () {
+            container.find('.mpr-calendar').each(function () {
                 var $cal = $(this);
                 var year = $cal.find('h5 span').html();
                 $cal.find('.mpr-month').each(function (i) {
@@ -323,56 +322,34 @@
                     }
                 });
             });
-            _this.find('.mpr-calendar .mpr-month').css("background", "");
-            //Write Text
-            setCurrentYearMonth(_settings);
+            container.find('.mpr-calendar .mpr-month').css("background", "");
             //paint months
-            if (_settings.currentDate.start.year == parseInt(_this.find('.mpr-calendar:first h5 span').html()))
-                _this.find('.mpr-calendar:first .mpr-selected:first').css("background", "#337ab7");
-            if (_settings.currentDate.end.year == parseInt(_this.find('.mpr-calendar:last h5 span').html()))
-                _this.find('.mpr-calendar:last .mpr-selected:last').css("background", "#337ab7");
+            if (_settings.currentDate.start.year == parseInt(container.find('.mpr-calendar:first h5 span').html()))
+                container.find('.mpr-calendar:first .mpr-selected:first').css("background", "#337ab7");
+            if (_settings.currentDate.end.year == parseInt(container.find('.mpr-calendar:last h5 span').html()))
+                container.find('.mpr-calendar:last .mpr-selected:last').css("background", "#337ab7");
+
+            container.find('.mpr-calendar h5 span').eq(0).html(_settings.currentDate.start.year);
+            container.find('.mpr-calendar h5 span').eq(1).html(_settings.currentDate.end.year);
         };
 
-        setContainerStatus = function (_this) {
-            var _settings = _this.settings;
-            setCurrentYearMonth(_settings);
+        container.setContainerStatus = function () {
+            var _settings = container.settings;
             //edit container values
             cStartDate = new Date(_settings.currentDate.start.year, _settings.currentDate.start.month);
             cEndDate = new Date(_settings.currentDate.end.year, _settings.currentDate.end.month);
-            _this.find('.mrp-monthdisplay .mrp-lowerMonth').html(_settings.MONTHS[_settings.currentDate.start.month - 1] + " " + _settings.currentDate.start.year);
-            _this.find('.mrp-monthdisplay .mrp-upperMonth').html(_settings.MONTHS[_settings.currentDate.end.month - 1] + " " + _settings.currentDate.end.year);
-            _this.find('.mrp-lowerDate').val(cStartDate);
-            _this.find('.mrp-upperDate').val(cEndDate);
-        }
-
-        setCurrentYearMonth = function (_settings) {
-            // var startyear = parseInt(_settings.cStartDate / 100);
-            // var startmonth = parseInt(safeRound((_settings.cStartDate / 100 - startyear)) * 100);
-            // var endyear = parseInt(_settings.cEndDate / 100);
-            // var endmonth = parseInt(safeRound((_settings.cEndDate / 100 - endyear)) * 100);
-
-            // _settings.currentDate.start.year = startyear;
-            // _settings.currentDate.start.month = startmonth;
-            // _settings.currentDate.end.year = endyear;
-            // _settings.currentDate.end.month = endmonth;
-        }
-
-        setViewToCurrentYears = function (_this) {
-            var _settings = _this.settings;
-            // var startyear = parseInt(_this.settings.cStartDate / 100);
-            // var endyear = parseInt(_this.settings.cEndDate / 100);
-            console.log("Current Date "+ JSON.stringify(_settings.currentDate));
-            _this.find('.mpr-calendar h5 span').eq(0).html(_settings.currentDate.start.year);
-            _this.find('.mpr-calendar h5 span').eq(1).html(_settings.currentDate.end.year);
-        }
-
-        safeRound = function (val) {
-            return Math.round(((val) + 0.00001) * 100) / 100;
+            container.find('.mrp-monthdisplay .mrp-lowerMonth').html(_settings.MONTHS[_settings.currentDate.start.month - 1] + " " + _settings.currentDate.start.year);
+            container.find('.mrp-monthdisplay .mrp-upperMonth').html(_settings.MONTHS[_settings.currentDate.end.month - 1] + " " + _settings.currentDate.end.year);
+            container.find('.mrp-lowerDate').val(cStartDate);
+            container.find('.mrp-upperDate').val(cEndDate);
         }
 
         return this;
     };
 
+    safeRound = function (val) {
+        return Math.round(((val) + 0.00001) * 100) / 100;
+    }
 
     // Plugin defaults – added as a property on our plugin function.
     $.fn.responsiveMonthRange.defaults = {
