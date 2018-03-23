@@ -1,8 +1,8 @@
-.mrp-container{
+.rmrp-container{
     margin-top:10px;
 }
 
-.mrp-icon{
+.rmrp-icon{
     border: solid 1px #ddd;
     border-radius: 5px 0px 0px 5px;
     /*color: #40667A;*/
@@ -11,7 +11,7 @@
     margin-right:0px;
 }
 
-.mrp-monthdisplay{
+.rmrp-monthdisplay{
     display:inline-block!important;
     border: solid 1px #ddd;
     padding: 5px 12px 5px 8px;
@@ -21,14 +21,14 @@
     margin-left: -5px;
 }
 
-.mrp-lowerMonth, .mrp-upperMonth{
+.rmrp-lowerMonth, .rmrp-upperMonth{
     /*color: #40667A;*/
     font-weight:bold;
     font-size: 11px;
     text-transform:uppercase;
 }
 
-.mrp-to{
+.rmrp-to{
     color: #aaa;
     margin-right: 0px;
     margin-left: 0px;
@@ -38,45 +38,45 @@
     padding: 5px 3px 5px 3px;
 }
 
-.mpr-calendar{
+.rmrp-calendar{
     display:inline-block;
     padding: 3px 5px;
     /*border-right: solid #999 1px;*/
 }
 
-.mpr-calendar::last-child{
+.rmrp-calendar::last-child{
     border-right: none;
 }
 
-.mpr-month{
+.rmrp-month{
     padding: 8px;
     /*text-transform: uppercase;*/
     font-size: 12px;
     text-align: center;
 }
 
-.mpr-calendar h5{
+.rmrp-calendar h5{
     width:100%;
     text-align:center;
     font-weight:bold;
 }
 
-.mpr-selected{
+.rmrp-selected{
     background: #5bc0de;/*BS Info = #5bc0de*/
     color: #fff;
 }
 
-.mpr-extremity{
+.rmrp-extremity{
     background: #337ab7; /*BS primary = #337ab7*/
 }
 
-.mpr-month:hover{
+.rmrp-month:hover{
     border-radius: 5px;
     box-shadow: 0 0 0 1px #ddd inset;
     cursor:pointer;
 }
 
-.mpr-selected.mpr-month:hover{
+.rmrp-selected.rmrp-month:hover{
     border-radius: 0px;
     box-shadow: none;
 }
@@ -109,35 +109,35 @@
     padding: 5px 0px;
 }
 
-/*.mpr-quickset{*/
+/*.rmrp-quickset{*/
     /*color: #666;*/
     /*text-transform: uppercase;*/
     /*text-align: center;*/
 /*}*/
 
-.mpr-yeardown, .mpr-yearup{
+.rmrp-yeardown, .rmrp-yearup{
     margin-left: 5px;
     cursor: pointer;
     color: #666;
 }
 
-.mpr-yeardown{
+.rmrp-yeardown{
     float:left;
 }
 
-.mpr-yearup{
+.rmrp-yearup{
     float:right;
 }
 
-.mpr-yeardown:hover,.mpr-yearup:hover{
+.rmrp-yeardown:hover,.rmrp-yearup:hover{
     /*color: #40667A;*/
 }
 
-/*.mpr-calendar:first .mpr-selected:first{*/
+/*.rmrp-calendar:first .rmrp-selected:first{*/
     /*background-color: #40667A;*/
 /*}*/
 
-/*.mpr-calendar:last .mpr-selected:last{*/
+/*.rmrp-calendar:last .rmrp-selected:last{*/
     /*background-color: #40667A;*/
 /*}*/
 
