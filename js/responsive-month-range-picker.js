@@ -2,28 +2,18 @@
 
     $.fn.responsiveMonthRange = function (options) {
         var container = this;
-        container.settings = $.extend({
-            currentDate: {
-                start: {
-                    year: 0,
-                    month: 0
-                },
-                end: {
-                    year: 0,
-                    month: 0
-                }
-            }
-        }, $.fn.responsiveMonthRange.defaults, options);
+        container.settings = $.extend({}, $.fn.responsiveMonthRange.defaults, options);
+        container.settings.currentDate = container.settings.defaultDate;
         console.log(container.settings);
 
-        if (container.settings.defaultDate.start.month < 10)
-            container.settings.cStartDate = parseInt("" + container.settings.defaultDate.start.year + '0' + container.settings.defaultDate.start.month + "");
-        else
-            container.settings.cStartDate = parseInt("" + container.settings.defaultDate.start.year + container.settings.defaultDate.start.month + "");
-        if (container.settings.defaultDate.end.month < 10)
-            container.settings.cEndDate = parseInt("" + container.settings.defaultDate.end.year + '0' + container.settings.defaultDate.end.month + "");
-        else
-            container.settings.cEndDate = parseInt("" + container.settings.defaultDate.end.year + container.settings.defaultDate.end.month + "");
+        // if (container.settings.defaultDate.start.month < 10)
+        //     container.settings.cStartDate = parseInt("" + container.settings.defaultDate.start.year + '0' + container.settings.defaultDate.start.month + "");
+        // else
+        //     container.settings.cStartDate = parseInt("" + container.settings.defaultDate.start.year + container.settings.defaultDate.start.month + "");
+        // if (container.settings.defaultDate.end.month < 10)
+        //     container.settings.cEndDate = parseInt("" + container.settings.defaultDate.end.year + '0' + container.settings.defaultDate.end.month + "");
+        // else
+        //     container.settings.cEndDate = parseInt("" + container.settings.defaultDate.end.year + container.settings.defaultDate.end.month + "");
 
 
         this.append('<div class="mrp-container nav navbar-nav">' +
@@ -45,7 +35,7 @@
             content += '<div class="calendar-column col-xs-5" >' +
                 '<div class="mpr-calendar row mpr-calendar-' + (y + 1) + '" >'//id="mpr-calendar-' + (y+1) + '">'
                 + '<h5 class="col-xs-12">' +
-                '<i class="mpr-yeardown fa fa-arrow-left"></i>' + '<span>' + (container.settings.defaultDate.start.year + y).toString() + '</span>' + '<i class="mpr-yearup fa fa-arrow-right"></i>' +
+                '<i class="mpr-yeardown fa fa-arrow-left" data-value="'+(y+1)+'"></i>' + '<span class="year-label-'+(y+1)+'">' + (container.settings.defaultDate.start.year + y).toString() + '</span>' + '<i class="mpr-yearup fa fa-arrow-right" data-value="'+(y+1)+'"></i>' +
                 '</h5>' +
                 '<div class="mpr-monthsContainer">' +
                 '<div class="mpr-MonthsWrapper">';
@@ -97,27 +87,32 @@
 
         container.on('click', '.mpr-month', function (e) {
             e.stopPropagation();
+            var _settings = container.settings;
             console.log(container.attr("id") + " : " + ".mpr-month");
             $month = $(this);
             var monthnum = $month.data('month');
-            var year = $month.parents('.mpr-calendar').children('h5').children('span').html();
-            console.log("clicked : " + year + "-" + monthnum);
+            // var year = $month.parents('.mpr-calendar').children('h5').children('span').html();
+            // console.log("clicked : " + year + "-" + monthnum);
+
+            cStartDate = new Date(_settings.currentDate.start.year, _settings.currentDate.start.month);
+            cEndDate = new Date(_settings.currentDate.end.year, _settings.currentDate.end.month);
             if ($month.parents('.mpr-calendar-1').length > 0) {
                 //Start Date
-                container.settings.cStartDate = parseInt("" + year + monthnum);
-                if (container.settings.cStartDate > container.settings.cEndDate) {
-
-                    if (year != parseInt(container.settings.cEndDate / 100))
-                        container.find('.mpr-calendar:last h5 span').html(year);
-                    container.settings.cEndDate = container.settings.cStartDate;
+                // container.settings.cStartDate = parseInt("" + year + monthnum);
+                _settings.currentDate.start.month = monthnum * 1;
+                if (cStartDate > cEndDate) {
+                    if (_settings.currentDate.start.year != _settings.currentDate.end.year){
+                        container.find('.mpr-calendar:last h5 span').html(_settings.currentDate.start.year);
+                    }
+                    _settings.currentDate.end.year = _settings.currentDate.start.year;
                 }
             } else {
                 //End Date
-                container.settings.cEndDate = parseInt("" + year + monthnum);
-                if (container.settings.cStartDate > container.settings.cEndDate) {
-                    if (year != parseInt(container.settings.cStartDate / 100))
-                        container.find('.mpr-calendar:first h5 span').html(year);
-                    container.settings.cStartDate = container.settings.cEndDate;
+                _settings.currentDate.end.month = monthnum * 1;
+                if (cStartDate > cEndDate) {
+                    if (_settings.currentDate.start.year != _settings.currentDate.end.year)
+                        container.find('.mpr-calendar:first h5 span').html(_settings.currentDate.end.year);
+                    _settings.currentDate.start.year = _settings.currentDate.end.year
                 }
             }
 
@@ -126,10 +121,19 @@
 
         container.on('click', '.mpr-yearup', function (e) {
             console.log(container.attr("id") + " : " + ".mpr-yearup");
+            var _settings = container.settings;
             e.stopPropagation();
-            var year = parseInt($(this).prev().html());
-            year++;
-            $(this).prev().html("" + year);
+            var calId = $(this).data("value");
+            if(calId == 1){//start date
+                _settings.currentDate.start.year++;
+                _settings.currentDate.start.month = 1;
+                var year = _settings.currentDate.start.year;
+            }else{//end date
+                _settings.currentDate.end.year++;
+                _settings.currentDate.end.month = 1;
+                var year = _settings.currentDate.end.year;
+            }
+            container.find(".year-label-"+calId).html("" + year);
             $(this).parents('.mpr-calendar').find('.mpr-MonthsWrapper').fadeOut(175, function () {
                 paintMonths(container);
                 $(this).parents('.mpr-calendar').find('.mpr-MonthsWrapper').fadeIn(175);
@@ -138,11 +142,19 @@
 
         container.on('click', '.mpr-yeardown', function (e) {
             console.log(container.attr("id") + " : " + ".mpr-yeardown");
+            var _settings = container.settings;
             e.stopPropagation();
-            var year = parseInt($(this).next().html());
-            year--;
-            $(this).next().html("" + year);
-            //paintMonths(container);
+            var calId = $(this).data("value");
+            if(calId == 1){//start date
+                _settings.currentDate.start.year--;
+                _settings.currentDate.start.month = 12;
+                var year = _settings.currentDate.start.year;
+            }else{//end date
+                _settings.currentDate.end.year--;
+                _settings.currentDate.end.month = 12;
+                var year = _settings.currentDate.end.year;
+            }
+            container.find(".year-label-"+calId).html("" + year);
             $(this).parents('.mpr-calendar').find('.mpr-MonthsWrapper').fadeOut(175, function () {
                 paintMonths(container);
                 $(this).parents('.mpr-calendar').find('.mpr-MonthsWrapper').fadeIn(175);
@@ -276,17 +288,23 @@
         });
 
         paintMonths = function (_this) {
+            var _settings = _this.settings;
             console.log(_this.attr("id") + " : " + "paint months");
-            console.log(_this.settings);
+            console.log("Current Date "+ JSON.stringify(_settings.currentDate));
+            console.log(_settings);
+
             _this.find('.mpr-calendar').each(function () {
                 var $cal = $(this);
                 var year = $cal.find('h5 span').html();
                 $cal.find('.mpr-month').each(function (i) {
-                    if ((i + 1) > 9)
-                        cDate = parseInt("" + year + (i + 1));
-                    else
-                        cDate = parseInt("" + year + '0' + (i + 1));
-                    if (cDate >= _this.settings.cStartDate && cDate <= _this.settings.cEndDate) {
+                    cDate = new Date(year, (i + 1));
+                    // if ((i + 1) > 9)
+                    //     cDate = parseInt("" + year + (i + 1));
+                    // else
+                    //     cDate = parseInt("" + year + '0' + (i + 1));
+                    cStartDate = new Date(_settings.currentDate.start.year, _settings.currentDate.start.month);
+                    cEndDate = new Date(_settings.currentDate.end.year, _settings.currentDate.end.month);
+                    if (cDate >= cStartDate && cDate <= cEndDate) {
                         $(this).addClass('mpr-selected');
                     } else {
                         $(this).removeClass('mpr-selected');
@@ -295,7 +313,6 @@
             });
             _this.find('.mpr-calendar .mpr-month').css("background", "");
             //Write Text
-            var _settings = _this.settings;
             setCurrentYearMonth(_settings);
             //paint months
             if (_settings.currentDate.start.year == parseInt(_this.find('.mpr-calendar:first h5 span').html()))
@@ -308,29 +325,33 @@
             var _settings = _this.settings;
             setCurrentYearMonth(_settings);
             //edit container values
+            cStartDate = new Date(_settings.currentDate.start.year, _settings.currentDate.start.month);
+            cEndDate = new Date(_settings.currentDate.end.year, _settings.currentDate.end.month);
             _this.find('.mrp-monthdisplay .mrp-lowerMonth').html(_settings.MONTHS[_settings.currentDate.start.month - 1] + " " + _settings.currentDate.start.year);
             _this.find('.mrp-monthdisplay .mrp-upperMonth').html(_settings.MONTHS[_settings.currentDate.end.month - 1] + " " + _settings.currentDate.end.year);
-            _this.find('.mrp-lowerDate').val(_settings.cStartDate);
-            _this.find('.mrp-upperDate').val(_settings.cEndDate);
+            _this.find('.mrp-lowerDate').val(cStartDate);
+            _this.find('.mrp-upperDate').val(cEndDate);
         }
 
         setCurrentYearMonth = function (_settings) {
-            var startyear = parseInt(_settings.cStartDate / 100);
-            var startmonth = parseInt(safeRound((_settings.cStartDate / 100 - startyear)) * 100);
-            var endyear = parseInt(_settings.cEndDate / 100);
-            var endmonth = parseInt(safeRound((_settings.cEndDate / 100 - endyear)) * 100);
+            // var startyear = parseInt(_settings.cStartDate / 100);
+            // var startmonth = parseInt(safeRound((_settings.cStartDate / 100 - startyear)) * 100);
+            // var endyear = parseInt(_settings.cEndDate / 100);
+            // var endmonth = parseInt(safeRound((_settings.cEndDate / 100 - endyear)) * 100);
 
-            _settings.currentDate.start.year = startyear;
-            _settings.currentDate.start.month = startmonth;
-            _settings.currentDate.end.year = endyear;
-            _settings.currentDate.end.month = endmonth;
+            // _settings.currentDate.start.year = startyear;
+            // _settings.currentDate.start.month = startmonth;
+            // _settings.currentDate.end.year = endyear;
+            // _settings.currentDate.end.month = endmonth;
         }
 
         setViewToCurrentYears = function (_this) {
-            var startyear = parseInt(_this.settings.cStartDate / 100);
-            var endyear = parseInt(_this.settings.cEndDate / 100);
-            _this.find('.mpr-calendar h5 span').eq(0).html(startyear);
-            _this.find('.mpr-calendar h5 span').eq(1).html(endyear);
+            var _settings = _this.settings;
+            // var startyear = parseInt(_this.settings.cStartDate / 100);
+            // var endyear = parseInt(_this.settings.cEndDate / 100);
+            console.log("Current Date "+ JSON.stringify(_settings.currentDate));
+            _this.find('.mpr-calendar h5 span').eq(0).html(_settings.currentDate.start.year);
+            _this.find('.mpr-calendar h5 span').eq(1).html(_settings.currentDate.end.year);
         }
 
         safeRound = function (val) {
