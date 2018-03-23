@@ -2,7 +2,7 @@
 
     $.fn.responsiveMonthRange = function (options) {
         var Self = this;
-        Self.settings = $.extend({}, $.fn.responsiveMonthRange.defaults, options);//{} is important to make event caller OK
+        Self.settings = $.extend(true, {}, $.fn.responsiveMonthRange.defaults, options);//{} is important to make event caller OK
         var _settings = Self.settings;
         _settings.currentDate = $.extend(true, {}, _settings.defaultDate);
         // console.log(_settings);
@@ -37,19 +37,19 @@
         }
         content += '<div class="button-column col-xs-2">';
         // content += '<h5 class="mpr-quickset">Quick Set</h5>';
-        if (_settings.button.fiscalYtd) {
-            content += '<button class="btn btn-info mpr-fiscal-ytd">Fiscal YTD</button>';
+        if (_settings.button.fiscalYtd.show) {
+            content += '<button class="btn btn-info mpr-fiscal-ytd">'+_settings.button.fiscalYtd.label+'</button>';
         }
-        if (_settings.button.ytd) {
-            content += '<button class="btn btn-info mpr-ytd">Year to date</button>';
+        if (_settings.button.ytd.show) {
+            content += '<button class="btn btn-info mpr-ytd">'+_settings.button.ytd.label+'</button>';
         }
-        if (_settings.button.previousFY) {
-            content += '<button class="btn btn-info mpr-prev-fiscal">Previous FY</button>';
+        if (_settings.button.previousFY.show) {
+            content += '<button class="btn btn-info mpr-prev-fiscal">'+_settings.button.previousFY.label+'</button>';
         }
-        if (_settings.button.previousYear) {
-            content += '<button class="btn btn-info mpr-prev-year">Previous Year</button>';
+        if (_settings.button.previousYear.show) {
+            content += '<button class="btn btn-info mpr-prev-year">'+_settings.button.previousYear.label+'</button>';
         }
-        content += '<button class="btn btn-primary btn-apply">Apply</button>';
+        content += '<button class="btn btn-primary btn-apply">'+_settings.button.apply.label+'</button>';
         content += '</div>';
         content += '</div>';
 
@@ -303,10 +303,11 @@
             to: "to"
         },
         button: {
-            previousYear: true,
-            ytd: true,
-            previousFY: true,
-            fiscalYtd: true
+            previousYear: {show: true, label:"Previous Year"},
+            ytd: {show: true, label:"Year To Date"},
+            previousFY: {show: true, label:"Previous FY"},
+            fiscalYtd: {show: true, label:"Fiscal YTD"},
+            apply: {label:"Apply"}
         },
         onApply: function (e) {
             console.log("apply");
