@@ -2,9 +2,9 @@
 
     $.fn.responsiveMonthRange = function (options) {
         var Self = this;
-        Self.settings = $.extend({}, $.fn.responsiveMonthRange.defaults, options);
+        Self.settings = $.extend({}, $.fn.responsiveMonthRange.defaults, options);//{} is important to make event caller OK
         var _settings = Self.settings;
-        _settings.currentDate = _settings.defaultDate;
+        _settings.currentDate = $.extend(true, {}, _settings.defaultDate);
         // console.log(_settings);
 
         Self.append('<div class="mrp-container nav navbar-nav">' +
@@ -20,7 +20,13 @@
             content += '<div class="calendar-column col-xs-5" >' +
                 '<div class="mpr-calendar row mpr-calendar-' + (y + 1) + '" data-value="' + (y + 1) + '">'
                 + '<h5 class="col-xs-12">' +
-                '<i class="mpr-yeardown fa fa-arrow-left" data-value="' + (y + 1) + '"></i>' + '<span class="year-label-' + (y + 1) + '">' + (_settings.defaultDate.start.year + y).toString() + '</span>' + '<i class="mpr-yearup fa fa-arrow-right" data-value="' + (y + 1) + '"></i>' +
+                '<i class="mpr-yeardown fa fa-arrow-left" data-value="' + (y + 1) + '"></i>' + '<span class="year-label-' + (y + 1) + '">';
+            if (y == 0) {
+                content += _settings.currentDate.start.year;
+            } else {
+                content += _settings.currentDate.end.year;
+            }
+            content += '</span>' + '<i class="mpr-yearup fa fa-arrow-right" data-value="' + (y + 1) + '"></i>' +
                 '</h5>' +
                 '<div class="mpr-monthsContainer">' +
                 '<div class="mpr-MonthsWrapper">';
@@ -289,7 +295,7 @@
                 month: 3
             },
             end: {
-                year: 2015,
+                year: 2016,
                 month: 10
             }
         },
