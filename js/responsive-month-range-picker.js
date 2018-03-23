@@ -266,11 +266,8 @@
             });
             Self.find('.mpr-calendar .mpr-month').css("background", "");
             Self.find('.mpr-calendar .mpr-month').removeClass("mpr-extremity");
-
-            if (_settings.currentDate.start.year == parseInt(Self.find('.mpr-calendar:first h5 span').html()))
-                Self.find('.mpr-calendar:first .mpr-selected:first').addClass("mpr-extremity");
-            if (_settings.currentDate.end.year == parseInt(Self.find('.mpr-calendar:last h5 span').html()))
-                Self.find('.mpr-calendar:last .mpr-selected:last').addClass("mpr-extremity");
+            Self.find('.mpr-calendar:first .mpr-selected:first').addClass("mpr-extremity");
+            Self.find('.mpr-calendar:last .mpr-selected:last').addClass("mpr-extremity");
 
             Self.find('.mpr-calendar h5 span').eq(0).html(_settings.currentDate.start.year);
             Self.find('.mpr-calendar h5 span').eq(1).html(_settings.currentDate.end.year);
