@@ -2,50 +2,45 @@
 
     $.fn.responsiveMonthRange = function (options) {
         var Self = this;
-        Self.settings = $.extend(true, $.fn.responsiveMonthRange.defaults, options);
-        Self.settings.currentDate = Self.settings.defaultDate;
+        Self.settings = $.extend({}, $.fn.responsiveMonthRange.defaults, options);
         var _settings = Self.settings;
+        _settings.currentDate = _settings.defaultDate;
         // console.log(_settings);
 
         Self.append('<div class="mrp-container nav navbar-nav">' +
             '<span class="mrp-icon"><i class="fa fa-calendar"></i></span>' +
             '<div class="mrp-monthdisplay">' +
-            '<span class="mrp-lowerMonth">'+_settings.MONTHS[_settings.currentDate.start.month - 1] + " " + _settings.currentDate.start.year+'</span>' +
-            '<span class="mrp-to"> '+_settings.label.to+' </span>' +
-            '<span class="mrp-upperMonth">'+_settings.MONTHS[_settings.currentDate.end.month - 1] + " " + _settings.currentDate.end.year+'</span>' +
+            '<span class="mrp-lowerMonth">' + _settings.MONTHS[_settings.currentDate.start.month - 1] + " " + _settings.currentDate.start.year + '</span>' +
+            '<span class="mrp-to"> ' + _settings.label.to + ' </span>' +
+            '<span class="mrp-upperMonth">' + _settings.MONTHS[_settings.currentDate.end.month - 1] + " " + _settings.currentDate.end.year + '</span>' +
             '</div>' +
             '</div>');
         var content = '<div class="row mpr-calendarholder">';
         for (y = 0; y < 2; y++) {
             content += '<div class="calendar-column col-xs-5" >' +
-                '<div class="mpr-calendar row mpr-calendar-' + (y + 1) + '" >'
+                '<div class="mpr-calendar row mpr-calendar-' + (y + 1) + '" data-value="' + (y + 1) + '">'
                 + '<h5 class="col-xs-12">' +
                 '<i class="mpr-yeardown fa fa-arrow-left" data-value="' + (y + 1) + '"></i>' + '<span class="year-label-' + (y + 1) + '">' + (_settings.defaultDate.start.year + y).toString() + '</span>' + '<i class="mpr-yearup fa fa-arrow-right" data-value="' + (y + 1) + '"></i>' +
                 '</h5>' +
                 '<div class="mpr-monthsContainer">' +
                 '<div class="mpr-MonthsWrapper">';
             for (m = 0; m < 12; m++) {
-                var monthval;
-                if ((m + 1) < 10)
-                    monthval = "0" + (m + 1);
-                else
-                    monthval = "" + (m + 1);
-                content += '<span data-month="' + monthval + '" class="col-xs-4 mpr-month">' + _settings.MONTHS[m] + '</span>';
+                content += '<span data-month="' + (m + 1) + '" class="col-xs-4 mpr-month">' + _settings.MONTHS[m] + '</span>';
             }
             content += '</div></div></div></div>';
         }
         content += '<div class="button-column col-xs-2">';
         // content += '<h5 class="mpr-quickset">Quick Set</h5>';
-        if(_settings.button.fiscalYtd){
+        if (_settings.button.fiscalYtd) {
             content += '<button class="btn btn-info mpr-fiscal-ytd">Fiscal YTD</button>';
         }
-        if(_settings.button.ytd){
+        if (_settings.button.ytd) {
             content += '<button class="btn btn-info mpr-ytd">Year to date</button>';
         }
-        if(_settings.button.previousFY){
+        if (_settings.button.previousFY) {
             content += '<button class="btn btn-info mpr-prev-fiscal">Previous FY</button>';
         }
-        if(_settings.button.previousYear){
+        if (_settings.button.previousYear) {
             content += '<button class="btn btn-info mpr-prev-year">Previous Year</button>';
         }
         content += '<button class="btn btn-primary btn-apply">Apply</button>';
@@ -77,31 +72,28 @@
 
         Self.on('click', '.mpr-month', function (e) {
             e.stopPropagation();
-            var _settings = Self.settings;
             $month = $(this);
-            var monthnum = $month.data('month');
-            cStartDate = new Date(_settings.currentDate.start.year, _settings.currentDate.start.month);
-            cEndDate = new Date(_settings.currentDate.end.year, _settings.currentDate.end.month);
-            if ($month.parents('.mpr-calendar-1').length > 0) {
-                //Start Date
-                _settings.currentDate.start.month = monthnum * 1;
-                if (cStartDate > cEndDate) {
-                    if (_settings.currentDate.start.year != _settings.currentDate.end.year) {
-                        Self.find('.mpr-calendar:last h5 span').html(_settings.currentDate.start.year);
-                    }
-                    _settings.currentDate.end.year = _settings.currentDate.start.year;
-                }
-            } else {
-                //End Date
-                _settings.currentDate.end.month = monthnum * 1;
-                if (cStartDate > cEndDate) {
-                    if (_settings.currentDate.start.year != _settings.currentDate.end.year)
-                        Self.find('.mpr-calendar:first h5 span').html(_settings.currentDate.end.year);
-                    _settings.currentDate.start.year = _settings.currentDate.end.year
-                }
+            var monthnum = $(this).data('month') * 1;
+            if ($month.parents('.mpr-calendar-1').length > 0) {//Start Date
+                _settings.currentDate.start.month = monthnum;
+            } else {//End Date
+                _settings.currentDate.end.month = monthnum;
             }
-
             Self.setCalendarUI();
+        });
+
+
+        Self.on('click', '.mpr-calendarholder', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        });
+
+        Self.on("click", ".mrp-container", function (e) {
+            if (mprVisible) {
+                e.preventDefault();
+                e.stopPropagation();
+                mprVisible = false;
+            }
         });
 
         Self.on('click', '.mpr-yearup', function (e) {
@@ -228,18 +220,6 @@
             });
             Self.setCalendarUI();
         });
-
-        Self.on('click', '.mpr-calendarholder', function (e) {
-            e.preventDefault();
-            e.stopPropagation();
-        });
-        Self.on("click", ".mrp-container", function (e) {
-            if (mprVisible) {
-                e.preventDefault();
-                e.stopPropagation();
-                mprVisible = false;
-            }
-        });
         Self.on("click", ".btn-apply", function (e) {
             Self.setContainerUI();
             _settings.onApply(_settings.currentDate);//Event listener
@@ -257,9 +237,16 @@
 
         Self.setCalendarUI = function () {
             // console.log("Current Date " + JSON.stringify(_settings.currentDate));
+            console.log(_settings);
             //Add classes for selected
             Self.find('.mpr-calendar').each(function () {
-                var year = $(this).find('h5 span').html();
+                var calId = $(this).data("value");
+                // var year = $(this).find(".mpr-calendar-"+$(this).data("value")).html();
+                var year;
+                if (calId == 1)
+                    year = _settings.currentDate.start.year;
+                else
+                    year = _settings.currentDate.end.year;
                 $(this).find('.mpr-month').each(function (i) {
                     cDate = new Date(year, (i + 1));
                     cStartDate = new Date(_settings.currentDate.start.year, _settings.currentDate.start.month);
@@ -290,12 +277,8 @@
             Self.find('.mrp-monthdisplay .mrp-upperMonth').html(_settings.MONTHS[_settings.currentDate.end.month - 1] + " " + _settings.currentDate.end.year);
         }
 
-        return Self;
+        return this;
     };
-
-    safeRound = function (val) {
-        return Math.round(((val) + 0.00001) * 100) / 100;
-    }
 
     // Plugin defaults – added as a property on our plugin function.
     $.fn.responsiveMonthRange.defaults = {
@@ -313,10 +296,10 @@
         fiscalDate: {
             month: 7
         },
-        label:{
+        label: {
             to: "to"
         },
-        button:{
+        button: {
             previousYear: true,
             ytd: true,
             previousFY: true,
@@ -324,7 +307,8 @@
         },
         onApply: function (e) {
             console.log("apply");
-        },
+        }
     };
 
 }(jQuery));
+
