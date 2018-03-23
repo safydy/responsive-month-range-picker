@@ -66,6 +66,10 @@
     color: #fff;
 }
 
+.mpr-extremity{
+    background: #337ab7; /*BS primary = #337ab7*/
+}
+
 .mpr-month:hover{
     border-radius: 5px;
     box-shadow: 0 0 0 1px #ddd inset;
