@@ -15,6 +15,9 @@
             '<span class="rmrp-upperMonth">' + _settings.MONTHS[_settings.currentDate.end.month - 1] + " " + _settings.currentDate.end.year + '</span>' +
             '</div>' +
             '</div>');
+        var popContainerId = "popover-container-"+Self.attr("id");
+        $(document.body).append("<div id='"+popContainerId+"'></div>");
+        var popContainer = $("#"+popContainerId);
         var content = '<div class="row rmrp-calendarholder">';
         for (y = 0; y < 2; y++) {
             content += '<div class="calendar-column col-xs-5" >' +
@@ -55,17 +58,17 @@
 
         var rmrpVisible = false;
         var rmrppopover = Self.find('.rmrp-container').popover({
-            container: Self,//"body",
+            container: popContainer,//"body",
             placement: "bottom",
             html: true,
             content: content
         }).on('show.bs.popover', function () {
             console.log(Self.attr("id") + " : " + ".rmrp-container show.bs.popover");
-            Self.find('.popover').remove();
+            popContainer.find('.popover').remove();
             var waiter = setInterval(function () {
-                if (Self.find('.popover').length > 0) {
+                if (popContainer.find('.popover').length > 0) {
                     clearInterval(waiter);
-                    Self.setCalendarUI();
+                    popContainer.setCalendarUI();
                 }
             }, 50);
         }).on('shown.bs.popover', function () {
@@ -76,7 +79,7 @@
             rmrpVisible = false;
         });
 
-        Self.on('click', '.rmrp-month', function (e) {
+        popContainer.on('click', '.rmrp-month', function (e) {
             e.stopPropagation();
             $month = $(this);
             var monthnum = $(this).data('month') * 1;
@@ -85,7 +88,7 @@
             } else {//End Date
                 _settings.currentDate.end.month = monthnum;
             }
-            Self.setCalendarUI();
+            popContainer.setCalendarUI();
         });
 
 
@@ -102,7 +105,7 @@
             }
         });
 
-        Self.on('click', '.rmrp-yearup', function (e) {
+        popContainer.on('click', '.rmrp-yearup', function (e) {
             e.stopPropagation();
             var calId = $(this).data("value");
             var bringChange = true;
@@ -120,12 +123,12 @@
                 var year = _settings.currentDate.end.year;
             }
             if (bringChange) {
-                Self.find(".year-label-" + calId).html("" + year);
-                Self.setCalendarUI();
+                popContainer.find(".year-label-" + calId).html("" + year);
+                popContainer.setCalendarUI();
             }
         });
 
-        Self.on('click', '.rmrp-yeardown', function (e) {
+        popContainer.on('click', '.rmrp-yeardown', function (e) {
             e.stopPropagation();
             var calId = $(this).data("value");
             var bringChange = true;
@@ -143,12 +146,12 @@
                 }
             }
             if (bringChange) {
-                Self.find(".year-label-" + calId).html("" + year);
-                Self.setCalendarUI();
+                popContainer.find(".year-label-" + calId).html("" + year);
+                popContainer.setCalendarUI();
             }
         });
 
-        Self.on('click', '.rmrp-ytd', function (e) {
+        popContainer.on('click', '.rmrp-ytd', function (e) {
             e.stopPropagation();
             var d = new Date();
             var year = d.getFullYear();
@@ -156,13 +159,13 @@
             _settings.currentDate.end.year = year;
             _settings.currentDate.start.month = 1;
             _settings.currentDate.end.month = d.getMonth() + 1;
-            Self.find('.rmrp-calendar').each(function () {
+            popContainer.find('.rmrp-calendar').each(function () {
                 $(this).find('h5 span').html(year);
             });
-            Self.setCalendarUI();
+            popContainer.setCalendarUI();
         });
 
-        Self.on('click', '.rmrp-prev-year', function (e) {
+        popContainer.on('click', '.rmrp-prev-year', function (e) {
             e.stopPropagation();
             var d = new Date();
             var year = d.getFullYear() - 1;
@@ -171,13 +174,13 @@
             _settings.currentDate.start.month = 1;
             _settings.currentDate.end.month = 12;
 
-            Self.find('.rmrp-calendar').each(function () {
+            popContainer.find('.rmrp-calendar').each(function () {
                 $(this).find('h5 span').html(year);
             });
-            Self.setCalendarUI();
+            popContainer.setCalendarUI();
         });
 
-        Self.on('click', '.rmrp-fiscal-ytd', function (e) {
+        popContainer.on('click', '.rmrp-fiscal-ytd', function (e) {
             e.stopPropagation();
             var d = new Date();
             var month = d.getMonth() + 1;
@@ -192,17 +195,17 @@
             _settings.currentDate.start.month = _settings.fiscalDate.month;
             _settings.currentDate.end.year = endyear;
             _settings.currentDate.end.month = month;
-            Self.find('.rmrp-calendar').each(function (i) {
+            popContainer.find('.rmrp-calendar').each(function (i) {
                 var $cal = $(this);
                 if (i == 0)
                     $cal.find('h5 span').html(startyear);
                 else
                     $cal.find('h5 span').html(endyear);
             });
-            Self.setCalendarUI();
+            popContainer.setCalendarUI();
         });
 
-        Self.on('click', '.rmrp-prev-fiscal', function () {
+        popContainer.on('click', '.rmrp-prev-fiscal', function () {
             var d = new Date();
             var month = d.getMonth() + 1;
             var startyear;
@@ -217,35 +220,35 @@
             _settings.currentDate.end.year = endyear;
             _settings.currentDate.end.month = _settings.fiscalDate.month - 1;
 
-            Self.find('.rmrp-calendar').each(function (i) {
+            popContainer.find('.rmrp-calendar').each(function (i) {
                 var $cal = $(this);
                 if (i == 0)
                     $cal.find('h5 span').html(startyear);
                 else
                     $cal.find('h5 span').html(endyear);
             });
-            Self.setCalendarUI();
+            popContainer.setCalendarUI();
         });
-        Self.on("click", ".btn-apply", function (e) {
-            Self.setContainerUI();
+        popContainer.on("click", ".btn-apply", function (e) {
+            popContainer.setContainerUI();
             _settings.onApply(_settings.currentDate);//Event listener
         });
-        Self.on("click", function (e) {
+        popContainer.on("click", function (e) {
             if (rmrpVisible) {
-                Self.find('.rmrp-calendarholder').parents('.popover').fadeOut(200, function () {
-                    Self.find('.rmrp-calendarholder').parents('.popover').remove();
-                    Self.find('.rmrp-container').trigger('click');
+                popContainer.find('.rmrp-calendarholder').parents('.popover').fadeOut(200, function () {
+                    popContainer.find('.rmrp-calendarholder').parents('.popover').remove();
+                    popContainer.find('.rmrp-container').trigger('click');
                 });
                 rmrpVisible = false;
             }
         });
 
 
-        Self.setCalendarUI = function () {
+        popContainer.setCalendarUI = function () {
             // console.log("Current Date " + JSON.stringify(_settings.currentDate));
             console.log(_settings);
             //Add classes for selected
-            Self.find('.rmrp-calendar').each(function () {
+            popContainer.find('.rmrp-calendar').each(function () {
                 var calId = $(this).data("value");
                 // var year = $(this).find(".rmrp-calendar-"+$(this).data("value")).html();
                 var year;
@@ -264,20 +267,20 @@
                     }
                 });
             });
-            Self.find('.rmrp-calendar .rmrp-month').css("background", "");
-            Self.find('.rmrp-calendar .rmrp-month').removeClass("rmrp-extremity");
-            Self.find('.rmrp-calendar:first .rmrp-selected:first').addClass("rmrp-extremity");
-            Self.find('.rmrp-calendar:last .rmrp-selected:last').addClass("rmrp-extremity");
+            popContainer.find('.rmrp-calendar .rmrp-month').css("background", "");
+            popContainer.find('.rmrp-calendar .rmrp-month').removeClass("rmrp-extremity");
+            popContainer.find('.rmrp-calendar:first .rmrp-selected:first').addClass("rmrp-extremity");
+            popContainer.find('.rmrp-calendar:last .rmrp-selected:last').addClass("rmrp-extremity");
 
-            Self.find('.rmrp-calendar h5 span').eq(0).html(_settings.currentDate.start.year);
-            Self.find('.rmrp-calendar h5 span').eq(1).html(_settings.currentDate.end.year);
+            popContainer.find('.rmrp-calendar h5 span').eq(0).html(_settings.currentDate.start.year);
+            popContainer.find('.rmrp-calendar h5 span').eq(1).html(_settings.currentDate.end.year);
 
         };
 
-        Self.setContainerUI = function () {
+        popContainer.setContainerUI = function () {
             //edit container values
-            Self.find('.rmrp-monthdisplay .rmrp-lowerMonth').html(_settings.MONTHS[_settings.currentDate.start.month - 1] + " " + _settings.currentDate.start.year);
-            Self.find('.rmrp-monthdisplay .rmrp-upperMonth').html(_settings.MONTHS[_settings.currentDate.end.month - 1] + " " + _settings.currentDate.end.year);
+            popContainer.find('.rmrp-monthdisplay .rmrp-lowerMonth').html(_settings.MONTHS[_settings.currentDate.start.month - 1] + " " + _settings.currentDate.start.year);
+            popContainer.find('.rmrp-monthdisplay .rmrp-upperMonth').html(_settings.MONTHS[_settings.currentDate.end.month - 1] + " " + _settings.currentDate.end.year);
         }
 
         return this;
