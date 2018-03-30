@@ -57,8 +57,9 @@
         content += '</div>';
 
         var rmrpVisible = false;
+        // popContainer = 'body';//Self
         var rmrppopover = Self.find('.rmrp-container').popover({
-            container: popContainer,//"body",
+            container: popContainer,
             placement: "bottom",
             html: true,
             content: content
@@ -79,19 +80,6 @@
             rmrpVisible = false;
         });
 
-        popContainer.on('click', '.rmrp-month', function (e) {
-            e.stopPropagation();
-            $month = $(this);
-            var monthnum = $(this).data('month') * 1;
-            if ($month.parents('.rmrp-calendar-1').length > 0) {//Start Date
-                _settings.currentDate.start.month = monthnum;
-            } else {//End Date
-                _settings.currentDate.end.month = monthnum;
-            }
-            popContainer.setCalendarUI();
-        });
-
-
         Self.on('click', '.rmrp-calendarholder', function (e) {
             e.preventDefault();
             e.stopPropagation();
@@ -103,6 +91,35 @@
                 e.stopPropagation();
                 rmrpVisible = false;
             }
+        });
+
+        Self.setContainerUI = function () {
+            //edit container values
+            Self.find('.rmrp-monthdisplay .rmrp-lowerMonth').html(_settings.MONTHS[_settings.currentDate.start.month - 1] + " " + _settings.currentDate.start.year);
+            Self.find('.rmrp-monthdisplay .rmrp-upperMonth').html(_settings.MONTHS[_settings.currentDate.end.month - 1] + " " + _settings.currentDate.end.year);
+        }
+
+        Self.on("click", function (e) {
+            e.stopPropagation();
+            if (rmrpVisible) {
+                popContainer.find('.rmrp-calendarholder').parents('.popover').fadeOut(200, function () {
+                    popContainer.find('.rmrp-calendarholder').parents('.popover').remove();
+                    popContainer.find('.rmrp-container').trigger('click');
+                });
+                rmrpVisible = false;
+            }
+        });
+
+        popContainer.on('click', '.rmrp-month', function (e) {
+            e.stopPropagation();
+            $month = $(this);
+            var monthnum = $(this).data('month') * 1;
+            if ($month.parents('.rmrp-calendar-1').length > 0) {//Start Date
+                _settings.currentDate.start.month = monthnum;
+            } else {//End Date
+                _settings.currentDate.end.month = monthnum;
+            }
+            popContainer.setCalendarUI();
         });
 
         popContainer.on('click', '.rmrp-yearup', function (e) {
@@ -229,18 +246,11 @@
             });
             popContainer.setCalendarUI();
         });
+
         popContainer.on("click", ".btn-apply", function (e) {
-            popContainer.setContainerUI();
+            e.stopPropagation();
+            Self.setContainerUI();
             _settings.onApply(_settings.currentDate);//Event listener
-        });
-        popContainer.on("click", function (e) {
-            if (rmrpVisible) {
-                popContainer.find('.rmrp-calendarholder').parents('.popover').fadeOut(200, function () {
-                    popContainer.find('.rmrp-calendarholder').parents('.popover').remove();
-                    popContainer.find('.rmrp-container').trigger('click');
-                });
-                rmrpVisible = false;
-            }
         });
 
 
@@ -276,12 +286,6 @@
             popContainer.find('.rmrp-calendar h5 span').eq(1).html(_settings.currentDate.end.year);
 
         };
-
-        popContainer.setContainerUI = function () {
-            //edit container values
-            popContainer.find('.rmrp-monthdisplay .rmrp-lowerMonth').html(_settings.MONTHS[_settings.currentDate.start.month - 1] + " " + _settings.currentDate.start.year);
-            popContainer.find('.rmrp-monthdisplay .rmrp-upperMonth').html(_settings.MONTHS[_settings.currentDate.end.month - 1] + " " + _settings.currentDate.end.year);
-        }
 
         return this;
     };
