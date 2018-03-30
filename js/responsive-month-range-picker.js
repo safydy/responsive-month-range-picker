@@ -62,7 +62,21 @@
             container: popContainer,
             placement: "bottom",
             html: true,
-            content: content
+            content: content,
+            // placement: function (context, source) {
+            //     var position = $(source).position();
+            //     var right = $(document).width() - $(source)[0].getBoundingClientRect().left - $(source).outerWidth();
+            //     console.log("doc width = " + $(document).width());
+            //     console.log($(source)[0].getBoundingClientRect().right);
+            //     console.log($(source)[0].getBoundingClientRect().left);
+            //     console.log($(source).outerWidth());
+            //     console.log("position left = " + position.left);
+            //     console.log("position right = " + (right));
+            //     console.log("is enough ? " + (right - $(source).outerWidth() / 2));
+            //     // console.log("position right = " + ($(document).width() - $(source)[0].getBoundingClientRect().left - $(source).outerWidth()));
+            //
+            //     return "bottom";
+            // }
         }).on('show.bs.popover', function () {
             console.log(Self.attr("id") + " : " + ".rmrp-container show.bs.popover");
             popContainer.find('.popover').remove();
@@ -323,3 +337,14 @@
 
 }(jQuery));
 
+//Dismiss popover when clicking outside
+$(document).on('click', function (e) {
+    $('[data-toggle="popover"],[data-original-title]').each(function () {
+        //the 'is' for buttons that trigger popups
+        //the 'has' for icons within a button that triggers a popup
+        if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
+            (($(this).popover('hide').data('bs.popover')||{}).inState||{}).click = false  // fix for BS 3.3.6
+        }
+
+    });
+});

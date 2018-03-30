@@ -1,5 +1,5 @@
 .rmrp-container{
-    margin-top:10px;
+    /*margin-top:10px;*/
 }
 
 .rmrp-icon{
@@ -44,7 +44,7 @@
     /*border-right: solid #999 1px;*/
 }
 
-.rmrp-calendar::last-child{
+.rmrp-calendar:last-child{
     border-right: none;
 }
 
@@ -133,15 +133,15 @@
     /*color: #40667A;*/
 }
 
-/*.rmrp-calendar:first .rmrp-selected:first{*/
-    /*background-color: #40667A;*/
-/*}*/
-
-/*.rmrp-calendar:last .rmrp-selected:last{*/
-    /*background-color: #40667A;*/
-/*}*/
 
 .popover{
     /*min: 80px!important;*/
+    /*max-width: 1640px!important;*/
+    max-width: none;
+    /*top: 71px !important;*/
+    /*left: 379px !important;*/
+}
+
+.rmrp-container{
     max-width: 1640px!important;
 }
