@@ -7,7 +7,7 @@
         _settings.currentDate = $.extend(true, {}, _settings.defaultDate);
         // console.log(_settings);
 
-        Self.append('<div class="rmrp-container nav navbar-nav">' +
+        Self.append('<div class="rmrp-container">' +
             '<span class="rmrp-icon"><i class="fa fa-calendar"></i></span>' +
             '<div class="rmrp-monthdisplay">' +
             '<span class="rmrp-lowerMonth">' + _settings.MONTHS[_settings.currentDate.start.month - 1] + " " + _settings.currentDate.start.year + '</span>' +
