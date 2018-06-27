@@ -141,7 +141,7 @@
             var calId = $(this).data("value");
             var bringChange = true;
             if (calId == 1) {//start date
-                if (_settings.currentDate.start.year >= _settings.currentDate.end.year - 1) {
+                if (_settings.currentDate.start.year >= _settings.currentDate.end.year) {
                     bringChange = false;
                 } else {
                     _settings.currentDate.start.year++;
@@ -168,7 +168,7 @@
                 _settings.currentDate.start.month = 12;
                 var year = _settings.currentDate.start.year;
             } else {//end date
-                if (_settings.currentDate.start.year >= _settings.currentDate.end.year - 1) {
+                if (_settings.currentDate.start.year >= _settings.currentDate.end.year) {
                     bringChange = false;
                 } else {
                     _settings.currentDate.end.year--;
@@ -265,6 +265,7 @@
             e.stopPropagation();
             Self.setContainerUI();
             _settings.onApply(_settings.currentDate);//Event listener
+            Self.find(".rmrp-container").click();
         });
 
 
