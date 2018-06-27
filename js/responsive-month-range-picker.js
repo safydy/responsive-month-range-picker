@@ -273,7 +273,7 @@
             // console.log("Current Date " + JSON.stringify(_settings.currentDate));
             console.log(_settings);
             //Add classes for selected
-            popContainer.find('.rmrp-calendar').each(function () {
+            popContainer.find('.rmrp-calendar').each(function (a) {
                 var calId = $(this).data("value");
                 // var year = $(this).find(".rmrp-calendar-"+$(this).data("value")).html();
                 var year;
@@ -287,13 +287,27 @@
                     cEndDate = new Date(_settings.currentDate.end.year, _settings.currentDate.end.month);
                     if (cDate >= cStartDate && cDate <= cEndDate) {
                         $(this).addClass('rmrp-selected');
+                        $(this).removeClass('rmrp-invalid');
                     } else {
                         $(this).removeClass('rmrp-selected');
+                        $(this).removeClass('rmrp-invalid');
+                        if(_settings.currentDate.start.year == _settings.currentDate.end.year){
+                            if(a == 0){//start date
+                                if(cDate > cEndDate){
+                                    $(this).addClass('rmrp-invalid');
+                                }
+                            }else{//end date
+                                if(cDate < cStartDate){
+                                    $(this).addClass('rmrp-invalid');
+                                }
+                            }
+                        }
                     }
                 });
             });
             popContainer.find('.rmrp-calendar .rmrp-month').css("background", "");
             popContainer.find('.rmrp-calendar .rmrp-month').removeClass("rmrp-extremity");
+
             popContainer.find('.rmrp-calendar:first .rmrp-selected:first').addClass("rmrp-extremity");
             popContainer.find('.rmrp-calendar:last .rmrp-selected:last').addClass("rmrp-extremity");
 

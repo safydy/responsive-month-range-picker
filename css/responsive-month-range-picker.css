@@ -78,6 +78,12 @@
     box-shadow: none;
 }
 
+.rmrp-invalid{
+    pointer-events: none;
+    cursor: default;
+    opacity: 0.6;
+}
+
 .calendar-column {
     max-width: 120px;
     min-width: 120px;
