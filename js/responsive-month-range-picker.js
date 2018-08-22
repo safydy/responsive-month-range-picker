@@ -149,9 +149,13 @@
                     var year = _settings.currentDate.start.year;
                 }
             } else {//end date
-                _settings.currentDate.end.year++;
-                _settings.currentDate.end.month = 1;
-                var year = _settings.currentDate.end.year;
+                if(_settings.currentDate.end.year == _settings.limitDate.end.year){
+                    bringChange = false;
+                }else{
+                    _settings.currentDate.end.year++;
+                    _settings.currentDate.end.month = 1;
+                    var year = _settings.currentDate.end.year;
+                }
             }
             if (bringChange) {
                 popContainer.find(".year-label-" + calId).html("" + year);
@@ -164,9 +168,13 @@
             var calId = $(this).data("value");
             var bringChange = true;
             if (calId == 1) {//start date
-                _settings.currentDate.start.year--;
-                _settings.currentDate.start.month = 12;
-                var year = _settings.currentDate.start.year;
+                if(_settings.currentDate.start.year == _settings.limitDate.start.year){
+                    bringChange = false;
+                }else{
+                    _settings.currentDate.start.year--;
+                    _settings.currentDate.start.month = 12;
+                    var year = _settings.currentDate.start.year;
+                }
             } else {//end date
                 if (_settings.currentDate.start.year >= _settings.currentDate.end.year) {
                     bringChange = false;
@@ -283,12 +291,14 @@
                     year = _settings.currentDate.end.year;
                 $(this).find('.rmrp-month').each(function (i) {
                     cDate = new Date(year, (i + 1));
+                    cStartDateLimit = new Date(_settings.limitDate.start.year, _settings.limitDate.start.month);
+                    cEndDateLimit = new Date(_settings.limitDate.end.year, _settings.limitDate.end.month);
                     cStartDate = new Date(_settings.currentDate.start.year, _settings.currentDate.start.month);
                     cEndDate = new Date(_settings.currentDate.end.year, _settings.currentDate.end.month);
                     if (cDate >= cStartDate && cDate <= cEndDate) {
                         $(this).addClass('rmrp-selected');
                         $(this).removeClass('rmrp-invalid');
-                    } else {
+                    }else {
                         $(this).removeClass('rmrp-selected');
                         $(this).removeClass('rmrp-invalid');
                         if(_settings.currentDate.start.year == _settings.currentDate.end.year){
@@ -302,6 +312,9 @@
                                 }
                             }
                         }
+                    }
+                    if(cDate < cStartDateLimit || cDate > cEndDateLimit){
+                        $(this).addClass('rmrp-invalid');
                     }
                 });
             });
@@ -330,6 +343,16 @@
             end: {
                 year: 2016,
                 month: 10
+            }
+        },
+        limitDate: {
+            start: {
+                year: 2014,
+                month: 2
+            },
+            end: {
+                year: 2016,
+                month: 11
             }
         },
         fiscalDate: {
