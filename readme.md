@@ -11,7 +11,38 @@ Propose light solution:
 * which is responsive
 * more flexible
 
+## Overview
+![Screen shot image](img/ScreenShot.png "Title")
 
+## Usage
+```javascript
+<script>
+    $("#test").responsiveMonthRange({
+        onApply: function (data) {
+            console.log(JSON.stringify(data));
+        }
+    });
+    $("#test2").responsiveMonthRange({
+        button:{
+            fiscalYtd: {show:false}
+        },
+        onApply: function (data) {
+            console.log("yes");
+        }
+    });
+    $("#test3").responsiveMonthRange({
+        button:{
+            fiscalYtd: {show:false},
+            previousFY: {show:false}
+        },
+        onApply: function (data) {
+            console.log("blabla");
+        }
+    });
+</script>
+```
+
+# Contribute?
 ## How to
 * Write plugin : https://learn.jquery.com/plugins/basic-plugin-creation/
 

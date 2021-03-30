@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0ca31332-e46a-4081-a39f-b3338c5c8481" name="Default" comment="use cdn resources">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/img/Screen Shot.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/readme.md" beforeDir="false" afterPath="$PROJECT_DIR$/readme.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -278,7 +278,7 @@
       <workItem from="1529567318468" duration="306000" />
       <workItem from="1529569381342" duration="1599000" />
       <workItem from="1530084431255" duration="6893000" />
-      <workItem from="1617072786441" duration="307000" />
+      <workItem from="1617072786441" duration="613000" />
     </task>
     <task id="LOCAL-00001" summary="turn to plugin approach">
       <created>1521638105242</created>
@@ -476,7 +476,14 @@
       <option name="project" value="LOCAL" />
       <updated>1530091371733</updated>
     </task>
-    <option name="localTasksCounter" value="29" />
+    <task id="LOCAL-00029" summary="use cdn resources">
+      <created>1617073094534</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1617073094534</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
